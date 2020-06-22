@@ -1,0 +1,28 @@
+{
+  "name": "tree_manager",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dep:graph": "npx madge --image graph.svg src/",
+    "lint": "npx eslint src/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mialso",
+  "license": "ISC",
+  "dependencies": {
+    "react": "16.13.1",
+    "react-reconciler": "0.25.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "madge": "3.9.2",
+    "react-dom": "16.13.1"
+  }
+}
