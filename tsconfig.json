@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "strict": false,
+        "outDir": "./build",
+        "preserveConstEnums": true,
+        "target": "es2020"
+    },
+    "include": [
+        "src/index.js", "plugin.d.ts"
+    ]
+}

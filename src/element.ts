@@ -11,7 +11,17 @@ const moduleRegistry = {
     }),
 };
 
-export function createElement(type, props, { dispatch }) {
+const defaultOptions = {
+    dispatch: (message) => console.info('DEFAULT_DISPATCH: %s', message),
+};
+
+export function createElement(item, props, options = defaultOptions) {
+    const { dispatch } = options;
+    const type = item;
+    // const type = item.name || 'unknown';
+    if (type === 'div') {
+        debugger
+    }
     const state = {
         children: [],
         type,
@@ -19,14 +29,17 @@ export function createElement(type, props, { dispatch }) {
     };
     return {
         appendChild(child) {
+            debugger
             console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: appendChild`);
             state.children.push(child);
         },
         removeChild(child) {
+            debugger
             console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: removeChild`);
             state.children = state.children.filter((item) => item === child);
         },
         commitMount() {
+            debugger
             console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: commitMount`);
             const getModule = moduleRegistry[type];
             if (!getModule) {
@@ -38,6 +51,7 @@ export function createElement(type, props, { dispatch }) {
             });
         },
         commitUpdate(newProps) {
+            debugger
             console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: commitUpdate`);
             state.props = { ...state.props, ...newProps };
         },
