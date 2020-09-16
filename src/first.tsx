@@ -1,26 +1,16 @@
 import React from 'react';
-import { useModuleLifecycle } from './manager/hooks';
-import { PluginModuleOne } from './one/pluginOne';
-import { PluginTwo } from './two/pluginTwo';
+import { useModuleLifecycle, useModuleInitTimeout } from './manager/hooks';
+import { PluginOne } from './plugin/pluginOne';
+import { PluginTwo } from './plugin/pluginTwo';
+import { ServiceOne } from './one/serviceOne';
+import { ServiceTwo } from './two/serviceTwo';
 
-export const PluginOne = ({ depth, moduleTwoData, setModuleTwoState }) => {
-    useModuleLifecycle('PluginTwo');
-    if (moduleTwoData.status === 'READY') {
-        return (
-            <plugin name="pluginOne" depth={depth}>
-                <PluginModuleOne depth={depth + 1} />
-            </plugin>
-        );
-    }
-    return null;
-};
-
+/*
 export const ModuleTwo = ({ depth }) => {
     const [moduleTwoState, setModuleTwoState] = React.useState({ data: 'modeleTwo', status: 'READY' });
     useModuleLifecycle('moduleTwo');
     return (
         <module name="moduleTwo" depth={depth}>
-            <PluginOne depth={depth + 1} moduleTwoData={moduleTwoState} setModuleTwoState={setModuleTwoState} />
             <PluginTwo depth={depth + 1} moduleTwoData={moduleTwoState} setModuleTwoState={setModuleTwoState} />
         </module>
     );
@@ -32,22 +22,17 @@ export const ModuleOne = ({ depth }) => {
         <module name="moduleOne" depth={depth} />
     );
 };
-
-export const ServiceOne = ({ depth, children }) => {
-    useModuleLifecycle('serviceOne');
-    return (
-        <service name="serviceOne" depth={depth}>
-            {children}
-        </service>
-    );
-};
+*/
 
 export const Root = () => {
     useModuleLifecycle('root');
+    const [rootState, setRootState] = React.useState({ status: 'NOT_READY' });
+    useModuleInitTimeout(1000, setRootState);
     return (
-        <ServiceOne depth={1}>
-            <ModuleOne depth={2} />
-            <ModuleTwo depth={2} />
-        </ServiceOne>
+        <ServiceTwo depth={1}>
+            <ServiceOne depth={2}>
+                { rootState.status === 'READY' && <PluginOne depth={3} data={{}} /> }
+            </ServiceOne>
+        </ServiceTwo>
     );
 };

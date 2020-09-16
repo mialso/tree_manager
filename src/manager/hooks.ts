@@ -8,5 +8,15 @@ export function useModuleLifecycle(moduleId) {
         return () => {
             dispatch(`${MODULE_UNMOUNT}_${moduleId}`);
         };
-    });
+    }, []);
+}
+
+export function useModuleInitTimeout(msec, setState) {
+    React.useEffect(() => {
+        setTimeout(() => setState({ status: 'READY' }), msec);
+        setTimeout(() => setState({ status: 'NOT_READY' }), msec * 2);
+        return () => {
+            setState({ status: 'NOT_READY' });
+        };
+    }, [msec, setState]);
 }

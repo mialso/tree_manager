@@ -19,9 +19,6 @@ export function createElement(item, props, options = defaultOptions) {
     const { dispatch } = options;
     const type = item;
     const name = props.name || 'unknown';
-    if (type === 'div') {
-        debugger
-    }
     const state = {
         children: [],
         name,
@@ -29,9 +26,10 @@ export function createElement(item, props, options = defaultOptions) {
         props,
     };
     return {
+        name,
         appendChild(child) {
             debugger
-            console.info(`${getSpaces(state.props.depth)}Element [${state.type}:<${state.name}>]: appendChild`);
+            console.info(`${getSpaces(state.props.depth)}Element [${state.type}:<${state.name}>]: appendChild: <${child.name}>`);
             state.children.push(child);
         },
         removeChild(child) {
@@ -53,7 +51,7 @@ export function createElement(item, props, options = defaultOptions) {
         },
         commitUpdate(newProps) {
             debugger
-            console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: commitUpdate`);
+            console.info(`${getSpaces(state.props.depth)}Element [${state.type}:<${state.name}>]: commitUpdate`);
             state.props = { ...state.props, ...newProps };
         },
     };
