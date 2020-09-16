@@ -7,23 +7,23 @@
 
 #### the story
 
-pluginOne depends on
-    serviceOne
-    serviceTwo
+* pluginOne depends on
+    * serviceOne
+    * serviceTwo
 
-pluginTwo depends on
-    serviceTwo
+* pluginTwo depends on
+    * serviceTwo
 
-serviceOne belongs to moduleOne and depends on
-    serviceThree
+* serviceOne belongs to moduleOne and depends on
+    * serviceThree
 
-service Two belongs to moduleTwo and depends on
-    serviceOne
+* service Two belongs to moduleTwo and depends on
+    * serviceOne
 
-service Three belongs to moduleTwo and depends on
-    nothing (is point free)
+* service Three belongs to moduleTwo and depends on
+    * nothing (is point free)
 
-pluginTwo load sequence:
-    1. serviceThree
-    2. serviceOne
-    3. serviceTwo
+##### pluginTwo load sequence:
+1. serviceThree
+2. serviceOne
+3. serviceTwo
