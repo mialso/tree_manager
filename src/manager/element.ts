@@ -1,5 +1,5 @@
-import { MODULE_READY } from './message.js';
-import { ModuleOne } from './moduleOne.js';
+import { MODULE_READY } from '../bus/message';
+import { ModuleOne } from '../moduleOne';
 
 export function getSpaces(num = 0) {
     return Array(num * 4).fill(' ').join('');
@@ -11,23 +11,35 @@ const moduleRegistry = {
     }),
 };
 
-export function createElement(type, props, { dispatch }) {
+const defaultOptions = {
+    dispatch: (message) => console.info('DEFAULT_DISPATCH: %s', message),
+};
+
+export function createElement(item, props, options = defaultOptions) {
+    const { dispatch } = options;
+    const type = item;
+    const name = props.name || 'unknown';
     const state = {
         children: [],
+        name,
         type,
         props,
     };
     return {
+        name,
         appendChild(child) {
-            console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: appendChild`);
+            debugger
+            console.info(`${getSpaces(state.props.depth)}Element [${state.type}:<${state.name}>]: appendChild: <${child.name}>`);
             state.children.push(child);
         },
         removeChild(child) {
+            debugger
             console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: removeChild`);
             state.children = state.children.filter((item) => item === child);
         },
         commitMount() {
-            console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: commitMount`);
+            debugger
+            console.info(`${getSpaces(state.props.depth)}Element [${state.type}:<${state.name}>]: commitMount`);
             const getModule = moduleRegistry[type];
             if (!getModule) {
                 return;
@@ -38,7 +50,8 @@ export function createElement(type, props, { dispatch }) {
             });
         },
         commitUpdate(newProps) {
-            console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: commitUpdate`);
+            debugger
+            console.info(`${getSpaces(state.props.depth)}Element [${state.type}:<${state.name}>]: commitUpdate`);
             state.props = { ...state.props, ...newProps };
         },
     };
