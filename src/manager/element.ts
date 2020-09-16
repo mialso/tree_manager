@@ -1,5 +1,5 @@
-import { MODULE_READY } from './message.js';
-import { ModuleOne } from './moduleOne.js';
+import { MODULE_READY } from '../bus/message';
+import { ModuleOne } from '../moduleOne';
 
 export function getSpaces(num = 0) {
     return Array(num * 4).fill(' ').join('');
@@ -18,19 +18,20 @@ const defaultOptions = {
 export function createElement(item, props, options = defaultOptions) {
     const { dispatch } = options;
     const type = item;
-    // const type = item.name || 'unknown';
+    const name = props.name || 'unknown';
     if (type === 'div') {
         debugger
     }
     const state = {
         children: [],
+        name,
         type,
         props,
     };
     return {
         appendChild(child) {
             debugger
-            console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: appendChild`);
+            console.info(`${getSpaces(state.props.depth)}Element [${state.type}:<${state.name}>]: appendChild`);
             state.children.push(child);
         },
         removeChild(child) {
@@ -40,7 +41,7 @@ export function createElement(item, props, options = defaultOptions) {
         },
         commitMount() {
             debugger
-            console.info(`${getSpaces(state.props.depth)}Element [${state.type}]: commitMount`);
+            console.info(`${getSpaces(state.props.depth)}Element [${state.type}:<${state.name}>]: commitMount`);
             const getModule = moduleRegistry[type];
             if (!getModule) {
                 return;

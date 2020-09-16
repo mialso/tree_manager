@@ -1,26 +1,27 @@
 import React from 'react';
-import { useModuleLifecycle } from './hooks.js';
+import { useModuleLifecycle } from './manager/hooks';
 import { PluginModuleOne } from './one/pluginOne';
+import { PluginTwo } from './two/pluginTwo';
 
 export const PluginOne = ({ depth, moduleTwoData, setModuleTwoState }) => {
     useModuleLifecycle('PluginTwo');
     if (moduleTwoData.status === 'READY') {
         return (
-            <plugin depth={depth}>
+            <plugin name="pluginOne" depth={depth}>
                 <PluginModuleOne depth={depth + 1} />
             </plugin>
         );
-    } else {
-        return null;
     }
+    return null;
 };
 
 export const ModuleTwo = ({ depth }) => {
     const [moduleTwoState, setModuleTwoState] = React.useState({ data: 'modeleTwo', status: 'READY' });
     useModuleLifecycle('moduleTwo');
     return (
-        <module depth={depth}>
+        <module name="moduleTwo" depth={depth}>
             <PluginOne depth={depth + 1} moduleTwoData={moduleTwoState} setModuleTwoState={setModuleTwoState} />
+            <PluginTwo depth={depth + 1} moduleTwoData={moduleTwoState} setModuleTwoState={setModuleTwoState} />
         </module>
     );
 };
@@ -28,14 +29,14 @@ export const ModuleTwo = ({ depth }) => {
 export const ModuleOne = ({ depth }) => {
     useModuleLifecycle('moduleOne');
     return (
-        <module depth={depth} />
+        <module name="moduleOne" depth={depth} />
     );
 };
 
 export const ServiceOne = ({ depth, children }) => {
     useModuleLifecycle('serviceOne');
     return (
-        <service depth={depth}>
+        <service name="serviceOne" depth={depth}>
             {children}
         </service>
     );

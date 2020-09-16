@@ -1,6 +1,6 @@
 import ReactReconciler from 'react-reconciler';
-import { createElement } from './element';
-import { dispatch } from './messageBus';
+import { createElement } from './manager/element';
+import { dispatch } from './bus/messageBus';
 
 export function createInstance(type, props) {
     return createElement(type, props, { dispatch });

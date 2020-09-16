@@ -6,9 +6,13 @@
         "strict": false,
         "outDir": "./build",
         "preserveConstEnums": true,
-        "target": "es2020"
+        "target": "es2020",
+        "typeRoots": [
+            "types",
+            "node_modules/@types"
+        ]
     },
     "include": [
-        "src/index.js", "plugin.d.ts"
+        "src/index.js", "types"
     ]
 }

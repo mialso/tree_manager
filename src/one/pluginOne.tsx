@@ -1,9 +1,9 @@
 import React from 'react';
-import { useModuleLifecycle } from '../hooks';
+import { useModuleLifecycle } from '../manager/hooks';
 
 export function PluginModuleOne({ depth }) {
     useModuleLifecycle('PluginModuleOne');
     return (
-        <plugin />
+        <plugin name="PluginModuleOne" depth={depth}/>
     );
 }
