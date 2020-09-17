@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
+    "build:prod": "webpack --env.prod",
     "execute": "node build/bundle.js",
     "dep:graph": "npx madge --image graph.svg src/",
     "lint": "npx eslint src/",

@@ -1,8 +1,8 @@
 const path = require('path');
 
-module.exports = {
+module.exports = (env) => ({
     entry: './src/index.ts',
-    mode: 'development',
+    mode: env.prod ? 'production' : 'development',
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: 'bundle.js',
@@ -18,4 +18,4 @@ module.exports = {
             },
         ],
     },
-};
+});
