@@ -27,19 +27,19 @@ export const ModuleOne = ({ depth, children }) => {
     );
 };
 
-export const Root = () => {
-    useModuleLifecycle('root');
+export const OldRoot = ({depth}) => {
+    useModuleLifecycle('oldRoot');
     const [rootState, setRootState] = React.useState({ status: 'NOT_READY' });
     useModuleInitTimeout(1000, setRootState);
     return (
-        <ModuleOne depth={1}>
-            <ServiceTwo depth={2}>
-                <ServiceOne depth={3}>
-                    { rootState.status === 'READY' && <PluginOne depth={4} data={{}} /> }
+        <ModuleOne depth={depth + 1}>
+            <ServiceTwo depth={depth + 2}>
+                <ServiceOne depth={depth + 3}>
+                    { rootState.status === 'READY' && <PluginOne depth={depth + 4} data={{}} /> }
                 </ServiceOne>
             </ServiceTwo>
-            <PluginTwo depth={2} data={rootState}>
-                <ServiceThree depth={3} />
+            <PluginTwo depth={depth + 2} data={rootState}>
+                <ServiceThree depth={depth + 3} />
             </PluginTwo>
         </ModuleOne>
     );
@@ -69,38 +69,49 @@ enum EntryStatus {
     READY = 'ENTRY_READY',
 }
 
-export const Entry = ({children}) => (
-    <module name="ENTRY" depth={1}>{children}</module>
+export const Entry = ({children, depth}) => (
+    <module name="ENTRY" depth={depth}>{children}</module>
 )
 
-export const EntryErrorPage = () => (
-    <plugin name="EntryErrorPage" depth={2}/>
+export const EntryErrorPage = ({depth}) => (
+    <plugin name="EntryErrorPage" depth={depth}/>
 )
 
-export const SpinnerPage = () => (
-    <plugin name="SpinnerPage" depth={2}/>
+export const SpinnerPage = ({depth}) => (
+    <plugin name="SpinnerPage" depth={depth}/>
 )
 
-export const AppCore = () => (
-    <module name="AppCore" depth={2} />
+export const AppCore = ({depth, children}) => (
+    <module name="AppCore" depth={depth}>
+        {children}
+    </module>
 )
 
 const STATUSES_CHAIN = [EntryStatus.ERROR, EntryStatus.LOADING, EntryStatus.READY];
 
 export const NewRoot = () => {
     const [entryStatusState, setEntryStatus] = React.useState({ status: EntryStatus.LOADING });
-    useModuleStatusTimeout(2000, setEntryStatus, STATUSES_CHAIN);
+    const updateStatus = React.useCallback(
+        ({ status }) => {
+            console.info('update status: %s', status)
+            setEntryStatus({ status })
+        },
+        [setEntryStatus],
+    )
+    useModuleStatusTimeout(2000, updateStatus, STATUSES_CHAIN);
     return (
-        <Entry>
+        <Entry depth={1}>
             <Switch status={entryStatusState.status}>
-                <control-state status={EntryStatus.ERROR}>
-                    <EntryErrorPage />
+                <control-state status={EntryStatus.ERROR} depth={2}>
+                    <EntryErrorPage depth={3}/>
                 </control-state>
-                <control-state status={EntryStatus.LOADING}>
-                    <SpinnerPage/>
+                <control-state status={EntryStatus.LOADING} depth={2}>
+                    <SpinnerPage depth={3}/>
                 </control-state>
-                <control-state status={EntryStatus.READY}>
-                    <AppCore/>
+                <control-state status={EntryStatus.READY} depth={2}>
+                    <AppCore depth={3}>
+                        <OldRoot depth={4}/>
+                    </AppCore>
                 </control-state>
             </Switch>
         </Entry>

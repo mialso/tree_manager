@@ -1,5 +1,5 @@
 import React from 'react';
-import { Root, NewRoot } from './Root';
+import { NewRoot } from './Root';
 import { createReconciler } from './moduleRenderer';
 import { createElement } from './manager/element';
 import { dispatch } from './bus/messageBus';
