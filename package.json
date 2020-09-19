@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --env.dev",
     "build:prod": "webpack --env.prod",
     "execute": "node build/bundle.js",
     "dep:graph": "npx madge --image graph.svg src/",
@@ -33,7 +33,10 @@
     "webpack-cli": "3.3.12"
   },
   "madge": {
-      "fileExtensions": ["ts", "tsx"],
-      "tsConfig": "./tsconfig.json"
+    "fileExtensions": [
+      "ts",
+      "tsx"
+    ],
+    "tsConfig": "./tsconfig.json"
   }
 }

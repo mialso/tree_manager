@@ -1,5 +1,5 @@
 import React from 'react';
-import { Root } from './Root';
+import { Root, NewRoot } from './Root';
 import { createReconciler } from './moduleRenderer';
 import { createElement } from './manager/element';
 import { dispatch } from './bus/messageBus';
@@ -11,7 +11,7 @@ const rootElement = createElement('root', {});
 const container = renderer.createContainer(rootElement, false, false);
 const parentComponent = null;
 renderer.updateContainer(
-    React.createElement(Root),
+    React.createElement(NewRoot),
     container,
     parentComponent,
     () => {

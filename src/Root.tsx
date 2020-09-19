@@ -1,5 +1,5 @@
 import React from 'react';
-import { useModuleLifecycle, useModuleInitTimeout } from './manager/hooks';
+import { useModuleLifecycle, useModuleInitTimeout, useModuleStatusTimeout } from './manager/hooks';
 import { PluginOne } from './plugin/PluginOne';
 import { PluginTwo } from './plugin/PluginTwo';
 import { ServiceOne } from './one/ServiceOne';
@@ -44,3 +44,65 @@ export const Root = () => {
         </ModuleOne>
     );
 };
+
+export const Switch = ({status, children}) => {
+    let element, match
+    React.Children.forEach(children, (child) => {
+        if (match) {
+            return
+        }
+        element = child
+        if (child.props.status === status) {
+            match = true
+        }
+
+    })
+    return match
+        // ? React.Children.only(element.children)
+        ? element
+        : null
+}
+
+enum EntryStatus {
+    ERROR = 'ENTRY_ERROR',
+    LOADING  = 'ENTRY_LOADING',
+    READY = 'ENTRY_READY',
+}
+
+export const Entry = ({children}) => (
+    <module name="ENTRY" depth={1}>{children}</module>
+)
+
+export const EntryErrorPage = () => (
+    <plugin name="EntryErrorPage" depth={2}/>
+)
+
+export const SpinnerPage = () => (
+    <plugin name="SpinnerPage" depth={2}/>
+)
+
+export const AppCore = () => (
+    <module name="AppCore" depth={2} />
+)
+
+const STATUSES_CHAIN = [EntryStatus.ERROR, EntryStatus.LOADING, EntryStatus.READY];
+
+export const NewRoot = () => {
+    const [entryStatusState, setEntryStatus] = React.useState({ status: EntryStatus.LOADING });
+    useModuleStatusTimeout(2000, setEntryStatus, STATUSES_CHAIN);
+    return (
+        <Entry>
+            <Switch status={entryStatusState.status}>
+                <control-state status={EntryStatus.ERROR}>
+                    <EntryErrorPage />
+                </control-state>
+                <control-state status={EntryStatus.LOADING}>
+                    <SpinnerPage/>
+                </control-state>
+                <control-state status={EntryStatus.READY}>
+                    <AppCore/>
+                </control-state>
+            </Switch>
+        </Entry>
+    )
+}

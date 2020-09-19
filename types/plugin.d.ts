@@ -3,5 +3,6 @@ declare namespace JSX {
         "plugin": any;
         "service": any;
         "module": any;
+        "control-state": any;
     }
 }

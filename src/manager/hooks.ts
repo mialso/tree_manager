@@ -20,3 +20,14 @@ export function useModuleInitTimeout(msec, setState) {
         };
     }, [msec, setState]);
 }
+
+export function useModuleStatusTimeout(msec, setState, statuses) {
+    React.useEffect(() => {
+        setTimeout(() => setState({ status: statuses[1] }), msec);
+        setTimeout(() => setState({ status: statuses[2] }), msec * 2);
+        setTimeout(() => setState({ status: statuses[0] }), msec * 3);
+        return () => {
+            setState({ status: statuses[0] });
+        };
+    }, [msec, setState, statuses]);
+}
