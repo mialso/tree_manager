@@ -15,6 +15,7 @@ renderer.updateContainer(
     container,
     parentComponent,
     () => {
+        console.info(`[DDD---] ${new Date().getSeconds()}`);
         dispatch(TREE_MOUNT);
     },
 );

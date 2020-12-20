@@ -35,6 +35,9 @@ export function resetTextContent() {}
 export function commitTextUpdate() {}
 
 export function removeChild(parentInstance, child) {
+    if (typeof child.destroy === 'function') {
+        child.destroy();
+    }
     return parentInstance.removeChild(child);
 }
 

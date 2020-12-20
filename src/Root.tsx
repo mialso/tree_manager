@@ -67,38 +67,57 @@ enum EntryStatus {
     ERROR = 'ENTRY_ERROR',
     LOADING  = 'ENTRY_LOADING',
     READY = 'ENTRY_READY',
+    OFF = 'OFF',
 }
 
-export const Entry = ({children, depth}) => (
-    <module name="ENTRY" depth={depth}>{children}</module>
-)
+export const Entry = ({children, depth}) => {
+    useModuleLifecycle('Entry');
+    return (
+        <module name="ENTRY" depth={depth}>{children}</module>
+    )
+}
 
-export const EntryErrorPage = ({depth}) => (
-    <plugin name="EntryErrorPage" depth={depth}/>
-)
+export const EntryErrorPage = ({depth}) => {
+    useModuleLifecycle('EntryErrorPage');
+    return (
+        <plugin name="EntryErrorPage" depth={depth}/>
+    )
+}
 
-export const SpinnerPage = ({depth}) => (
-    <plugin name="SpinnerPage" depth={depth}/>
-)
+export const SpinnerPage = ({depth}) => {
+    useModuleLifecycle('SpinnerPage');
+    return (
+        <plugin name="SpinnerPage" depth={depth}/>
+    )
+}
 
-export const AppCore = ({depth, children}) => (
-    <module name="AppCore" depth={depth}>
-        {children}
-    </module>
-)
+export const AppCore = ({depth, children}) => {
+    useModuleLifecycle('AppCore');
+    return (
+        <module name="AppCore" depth={depth}>
+            <ServiceTwo depth={depth + 1}>
+                {children}
+            </ServiceTwo>
+        </module>
+    )
+}
 
-const STATUSES_CHAIN = [EntryStatus.ERROR, EntryStatus.LOADING, EntryStatus.READY];
+const STATUSES_CHAIN = [EntryStatus.ERROR, EntryStatus.LOADING, EntryStatus.READY, EntryStatus.OFF];
 
 export const NewRoot = () => {
     const [entryStatusState, setEntryStatus] = React.useState({ status: EntryStatus.LOADING });
+    console.info('[NEW_ROOT]: (render): <statusState>: %s', entryStatusState)
     const updateStatus = React.useCallback(
         ({ status }) => {
-            console.info('update status: %s', status)
+            console.info('[NEW_ROOT]: (update): <NEW STATUS>: %s', status)
             setEntryStatus({ status })
         },
         [setEntryStatus],
     )
-    useModuleStatusTimeout(2000, updateStatus, STATUSES_CHAIN);
+    useModuleStatusTimeout(7000, updateStatus, STATUSES_CHAIN);
+    if (entryStatusState.status === EntryStatus.OFF) {
+        return null
+    }
     return (
         <Entry depth={1}>
             <Switch status={entryStatusState.status}>

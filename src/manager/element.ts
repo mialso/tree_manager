@@ -21,6 +21,7 @@ export function createElement(item, props) {
         type,
         props,
     };
+    console.info(`${moduleLog(state)}: create(mount|render)`);
     return {
         type,
         name,
@@ -38,6 +39,9 @@ export function createElement(item, props) {
         commitUpdate(newProps) {
             console.info(`${moduleLog(state)}: commitUpdate`);
             state.props = { ...state.props, ...newProps };
+        },
+        destroy() {
+            console.info(`${moduleLog(state)}: destroy`);
         },
     };
 }
