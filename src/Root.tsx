@@ -7,39 +7,39 @@ import { ServiceTwo } from './two/ServiceTwo';
 import { ServiceThree } from './two/ServiceThree';
 
 /*
-export const ModuleTwo = ({ depth }) => {
+export const ModuleTwo = () => {
     const [moduleTwoState, setModuleTwoState] = React.useState({ data: 'modeleTwo', status: 'READY' });
     useModuleLifecycle('moduleTwo');
     return (
-        <module name="moduleTwo" depth={depth}>
-            <PluginTwo depth={depth + 1} moduleTwoData={moduleTwoState} setModuleTwoState={setModuleTwoState} />
+        <module name="moduleTwo">
+            <PluginTwo moduleTwoData={moduleTwoState} setModuleTwoState={setModuleTwoState} />
         </module>
     );
 };
 */
 
-export const ModuleOne = ({ depth, children }) => {
+export const ModuleOne = ({ children }) => {
     useModuleLifecycle('moduleOne');
     return (
-        <module name="moduleOne" depth={depth}>
+        <module name="moduleOne">
             {children}
         </module>
     );
 };
 
-export const OldRoot = ({depth}) => {
+export const OldRoot = () => {
     useModuleLifecycle('oldRoot');
     const [rootState, setRootState] = React.useState({ status: 'NOT_READY' });
     useModuleInitTimeout(1000, setRootState);
     return (
-        <ModuleOne depth={depth + 1}>
-            <ServiceTwo depth={depth + 2}>
-                <ServiceOne depth={depth + 3}>
-                    { rootState.status === 'READY' && <PluginOne depth={depth + 4} data={{}} /> }
+        <ModuleOne>
+            <ServiceTwo>
+                <ServiceOne>
+                    { rootState.status === 'READY' && <PluginOne data={{}} /> }
                 </ServiceOne>
             </ServiceTwo>
-            <PluginTwo depth={depth + 2} data={rootState}>
-                <ServiceThree depth={depth + 3} />
+            <PluginTwo data={rootState}>
+                <ServiceThree />
             </PluginTwo>
         </ModuleOne>
     );
@@ -70,32 +70,32 @@ enum EntryStatus {
     OFF = 'OFF',
 }
 
-export const Entry = ({children, depth}) => {
+export const Entry = ({children}) => {
     useModuleLifecycle('Entry');
     return (
-        <module name="ENTRY" depth={depth}>{children}</module>
+        <module name="ENTRY">{children}</module>
     )
 }
 
-export const EntryErrorPage = ({depth}) => {
+export const EntryErrorPage = () => {
     useModuleLifecycle('EntryErrorPage');
     return (
-        <plugin name="EntryErrorPage" depth={depth}/>
+        <plugin name="EntryErrorPage" />
     )
 }
 
-export const SpinnerPage = ({depth}) => {
+export const SpinnerPage = () => {
     useModuleLifecycle('SpinnerPage');
     return (
-        <plugin name="SpinnerPage" depth={depth}/>
+        <plugin name="SpinnerPage" />
     )
 }
 
-export const AppCore = ({depth, children}) => {
+export const AppCore = ({children}) => {
     useModuleLifecycle('AppCore');
     return (
-        <module name="AppCore" depth={depth}>
-            <ServiceTwo depth={depth + 1}>
+        <module name="AppCore">
+            <ServiceTwo>
                 {children}
             </ServiceTwo>
         </module>
@@ -119,17 +119,17 @@ export const NewRoot = () => {
         return null
     }
     return (
-        <Entry depth={1}>
+        <Entry>
             <Switch status={entryStatusState.status}>
-                <control-state status={EntryStatus.ERROR} depth={2}>
-                    <EntryErrorPage depth={3}/>
+                <control-state status={EntryStatus.ERROR}>
+                    <EntryErrorPage />
                 </control-state>
-                <control-state status={EntryStatus.LOADING} depth={2}>
-                    <SpinnerPage depth={3}/>
+                <control-state status={EntryStatus.LOADING}>
+                    <SpinnerPage />
                 </control-state>
-                <control-state status={EntryStatus.READY} depth={2}>
-                    <AppCore depth={3}>
-                        <OldRoot depth={4}/>
+                <control-state status={EntryStatus.READY}>
+                    <AppCore>
+                        <OldRoot />
                     </AppCore>
                 </control-state>
             </Switch>

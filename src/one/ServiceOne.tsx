@@ -1,10 +1,10 @@
 import React from 'react';
 import { useModuleLifecycle } from '../manager/hooks';
 
-export const ServiceOne = ({ depth, children }) => {
+export const ServiceOne = ({ children }) => {
     useModuleLifecycle('serviceOne');
     return (
-        <service name="serviceOne" depth={depth}>
+        <service name="serviceOne">
             {children}
         </service>
     );

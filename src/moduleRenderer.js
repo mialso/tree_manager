@@ -2,7 +2,7 @@ import ReactReconciler from 'react-reconciler';
 import { createElement } from './manager/element';
 import { dispatch } from './bus/messageBus';
 
-export function createInstance(type, props) {
+export function createInstance(type, props, _containerElem) {
     return createElement(type, props, { dispatch });
 }
 
@@ -48,7 +48,7 @@ export function removeChildFromContainer(container, child) {
 export function insertBefore() {}
 
 export function appendChildToContainer(container, child) {
-    console.log('appendChildToContainer')
+    child.setDepth(1)
     return container.appendChild(child);
 }
 

@@ -1,7 +1,7 @@
 export function ModuleOne({ getState }) {
     return {
         doSmth() {
-            return `YO: module One: I\' deep in=${getState().props.depth}`;
+            return `YO: module One: I\' deep in=${getState().depth}`;
         },
     };
 }
