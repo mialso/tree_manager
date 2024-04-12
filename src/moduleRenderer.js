@@ -1,5 +1,5 @@
 import ReactReconciler from 'react-reconciler';
-import { createElement } from './manager/element';
+import { OWN_PROP_KEYS, createElement } from './manager/element';
 import { dispatch } from './bus/messageBus';
 
 export function createInstance(type, props, _containerElem) {
@@ -68,8 +68,15 @@ export function getChildHostContext() {
     return {};
 }
 
-export function commitUpdate(instance, uP, t, o, newProps) {
-    return instance.commitUpdate(newProps);
+export function commitUpdate(instance, uP, t, oldProps, newProps) {
+    const hasUpdate = Object.keys(newProps)
+        .filter((key) => !OWN_PROP_KEYS.includes(key))
+        .reduce((acc, key) => {
+            return acc || (oldProps[key] !== newProps[key])
+        }, false)
+    if (hasUpdate) {
+        instance.commitUpdate(newProps);
+    }
 }
 
 export function commitMount(instance) {

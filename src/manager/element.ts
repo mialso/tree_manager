@@ -7,6 +7,7 @@ const defaultOptions = {
     dispatch: (message) => console.info('DEFAULT_DISPATCH: %s', message),
 };
 */
+export const OWN_PROP_KEYS = ['children', 'key']
 
 const elementTitle = (state) => `<${state.type || ''}> ${state.name ? `[${state.name}]` : ''}`
 const elementLog = (state) => `${getSpaces(state.depth)}Element${elementTitle(state)}`;
@@ -51,7 +52,15 @@ export function createElement(item, props) {
             console.info(`${elementLog(state)}: commitMount`);
         },
         commitUpdate(newProps) {
-            console.info(`${elementLog(state)}: commitUpdate`);
+            const propsString = Object.keys(newProps)
+                .filter((key) => !OWN_PROP_KEYS.includes(key))
+                .reduce((acc, key) => {
+                    if (state.props[key] !== newProps[key]) {
+                        return acc.concat(` ${key}=${JSON.stringify(newProps[key])}`)
+                    }
+                    return acc
+                }, '')
+            console.info(`${elementLog(state)}: commitUpdate: ${propsString}`);
             state.props = { ...state.props, ...newProps };
         },
         destroy() {
