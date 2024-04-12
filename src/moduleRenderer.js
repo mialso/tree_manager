@@ -41,11 +41,14 @@ export function removeChild(parentInstance, child) {
     return parentInstance.removeChild(child);
 }
 
-export function removeChildFromContainer() {}
+export function removeChildFromContainer(container, child) {
+    console.log('removeChildFromContainer')
+}
 
 export function insertBefore() {}
 
 export function appendChildToContainer(container, child) {
+    console.log('appendChildToContainer')
     return container.appendChild(child);
 }
 

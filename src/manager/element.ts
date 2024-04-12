@@ -22,7 +22,7 @@ export function createElement(item, props) {
         type,
         props,
     };
-    console.info(`${elementLog(state)}: create(mount|render)`);
+    console.info(`${elementLog(state)}: (init)`);
     return {
         type,
         name,
@@ -42,7 +42,10 @@ export function createElement(item, props) {
             state.props = { ...state.props, ...newProps };
         },
         destroy() {
-            console.info(`${elementLog(state)}: destroy`);
+            console.info(`${elementLog(state)}: (destroy)`);
+            if (Array.isArray(state.children)) {
+              state.children.forEach((child) => child.destroy())
+            }
         },
     };
 }
