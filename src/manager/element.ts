@@ -8,7 +8,8 @@ const defaultOptions = {
 };
 */
 
-const moduleLog = (state) => `${getSpaces(state.props.depth)}Element<${state.type}> ${state.name ? `[${state.name}]` : ''}`;
+const elementTitle = (state) => `<${state.type || ''}> ${state.name ? `[${state.name}]` : ''}`
+const elementLog = (state) => `${getSpaces(state.props.depth)}Element${elementTitle(state)}`;
 
 export function createElement(item, props) {
 // export function createElement(item, props, options = defaultOptions) {
@@ -21,27 +22,27 @@ export function createElement(item, props) {
         type,
         props,
     };
-    console.info(`${moduleLog(state)}: create(mount|render)`);
+    console.info(`${elementLog(state)}: create(mount|render)`);
     return {
         type,
         name,
         appendChild(child) {
-            console.info(`${moduleLog(state)}: appendChild: <${child.name || child.type}>`);
+            console.info(`${elementLog(state)}: appendChild: ${elementTitle(child)}`);
             state.children.push(child);
         },
         removeChild(child) {
-            console.info(`${moduleLog(state)}: removeChild: <${child.name || child.type}>`);
+            console.info(`${elementLog(state)}: removeChild: ${elementTitle(child)}`);
             state.children = state.children.filter((item) => item === child);
         },
         commitMount() {
-            console.info(`${moduleLog(state)}: commitMount`);
+            console.info(`${elementLog(state)}: commitMount`);
         },
         commitUpdate(newProps) {
-            console.info(`${moduleLog(state)}: commitUpdate`);
+            console.info(`${elementLog(state)}: commitUpdate`);
             state.props = { ...state.props, ...newProps };
         },
         destroy() {
-            console.info(`${moduleLog(state)}: destroy`);
+            console.info(`${elementLog(state)}: destroy`);
         },
     };
 }
