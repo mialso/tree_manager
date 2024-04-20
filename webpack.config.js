@@ -1,10 +1,10 @@
-const path = require('path');
+import path from 'path';
 
-module.exports = (env) => ({
+export default (env) => ({
     entry: './src/index.ts',
     mode: env.prod ? 'production' : 'development',
     output: {
-        path: path.resolve(__dirname, 'build'),
+        path: path.resolve('./', 'build'),
         filename: 'bundle.js',
     },
     resolve: {
