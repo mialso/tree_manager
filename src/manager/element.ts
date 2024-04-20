@@ -1,3 +1,24 @@
+type Named = {
+    type: string
+    name: string
+}
+type Element = Named & {
+    setDepth: (depth: number) => void
+    appendChild: (element: Element) => void
+    removeChild: (element: Element) => void
+    commitUpdate: (props: any) => void
+    commitMount: () => void
+    destroy: () => void
+}
+type Props = {
+    name?: string
+}
+type State = Named & {
+    children: any[]
+    depth: number
+    props: Props
+}
+
 export function getSpaces(num = 0) {
     return Array(num * 4).fill(' ').join('');
 }
@@ -7,17 +28,17 @@ const defaultOptions = {
     dispatch: (message) => console.info('DEFAULT_DISPATCH: %s', message),
 };
 */
-export const OWN_PROP_KEYS = ['children', 'key']
+export const OWN_PROP_KEYS = ['children', 'key'];
 
-const elementTitle = (state) => `<${state.type || ''}> ${state.name ? `[${state.name}]` : ''}`
-const elementLog = (state) => `${getSpaces(state.depth)}Element${elementTitle(state)}`;
+const elementTitle = (state: Named) => `<${state.type || ''}> ${state.name ? `[${state.name}]` : ''}`;
+const elementLog = (state: State) => `${getSpaces(state.depth)}Element${elementTitle(state)}`;
 
-export function createElement(item, props) {
-// export function createElement(item, props, options = defaultOptions) {
+export function createElement(item: string, props: Props): Element {
+    // export function createElement(item, props, options = defaultOptions) {
     // const { dispatch } = options;
     const type = item;
     const name = props.name || '';
-    const state = {
+    const state: State = {
         children: [],
         name,
         type,
@@ -28,11 +49,11 @@ export function createElement(item, props) {
     return {
         type,
         name,
-        setDepth(value) {
+        setDepth(value: number) {
             if (state.depth === value) {
                 return;
             }
-            state.depth = value
+            state.depth = value;
             if (Array.isArray(state.children)) {
                 state.children.forEach((child) => child.setDepth(value + 1));
             }
@@ -56,10 +77,10 @@ export function createElement(item, props) {
                 .filter((key) => !OWN_PROP_KEYS.includes(key))
                 .reduce((acc, key) => {
                     if (state.props[key] !== newProps[key]) {
-                        return acc.concat(` ${key}=${JSON.stringify(newProps[key])}`)
+                        return acc.concat(` ${key}=${JSON.stringify(newProps[key])}`);
                     }
-                    return acc
-                }, '')
+                    return acc;
+                }, '');
             console.info(`${elementLog(state)}: commitUpdate: ${propsString}`);
             state.props = { ...state.props, ...newProps };
         },
