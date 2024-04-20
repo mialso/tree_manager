@@ -3,7 +3,8 @@ import { OWN_PROP_KEYS, createElement } from './manager/element';
 import { dispatch } from './bus/messageBus';
 
 export function createInstance(type, props, _containerElem) {
-    return createElement(type, props, { dispatch });
+    // return createElement(type, props, { dispatch });
+    return createElement(type, props);
 }
 
 export function appendInitialChild(parentInstance, child) {
@@ -22,17 +23,17 @@ export function getPublicInstance(instance) {
     return instance;
 }
 
-export function prepareForCommit() {}
+export function prepareForCommit() { }
 
 export function prepareUpdate() {
     return true;
 }
 
-export function resetAfterCommit() {}
+export function resetAfterCommit() { }
 
-export function resetTextContent() {}
+export function resetTextContent() { }
 
-export function commitTextUpdate() {}
+export function commitTextUpdate() { }
 
 export function removeChild(parentInstance, child) {
     if (typeof child.destroy === 'function') {
@@ -45,7 +46,7 @@ export function removeChildFromContainer(container, child) {
     console.log('removeChildFromContainer')
 }
 
-export function insertBefore() {}
+export function insertBefore() { }
 
 export function appendChildToContainer(container, child) {
     child.setDepth(1)
@@ -87,9 +88,9 @@ export function shouldDeprioritizeSubtree() {
     return true;
 }
 
-export function scheduleDeferredCallback() {}
+export function scheduleDeferredCallback() { }
 
-export function cancelDeferredCallback() {}
+export function cancelDeferredCallback() { }
 
 export function setTimeout(handler, timeout) {
     return setTimeout(handler, timeout);
