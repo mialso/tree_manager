@@ -6,7 +6,7 @@ type Element = Named & {
     setDepth: (depth: number) => void
     appendChild: (element: Element) => void
     removeChild: (element: Element) => void
-    commitUpdate: (props: any) => void
+    commitUpdate: (props: unknown) => void
     commitMount: () => void
     destroy: () => void
 }
@@ -14,7 +14,7 @@ type Props = {
     name?: string
 }
 type State = Named & {
-    children: any[]
+    children: Element[]
     depth: number
     props: Props
 }
@@ -73,6 +73,9 @@ export function createElement(item: string, props: Props): Element {
             console.info(`${elementLog(state)}: commitMount`);
         },
         commitUpdate(newProps) {
+            if (typeof newProps !== 'object') {
+                return
+            }
             const propsString = Object.keys(newProps)
                 .filter((key) => !OWN_PROP_KEYS.includes(key))
                 .reduce((acc, key) => {
