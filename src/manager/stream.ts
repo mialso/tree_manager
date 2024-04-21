@@ -1,56 +1,31 @@
-import { createStream, StreamProps } from "./stream"
+import type { EventEmitter } from 'tsee'
+import type { Element, State } from './element'
+import { elementLog, elementTitle, OWN_PROP_KEYS } from './element'
 
-export type Named = {
-    type: string
-    name: string
-}
-export type Element<P> = Named & {
-    setDepth: (depth: number) => void
-    appendChild: (element: Element<P>) => void
-    removeChild: (element: Element<P>) => void
-    commitUpdate: (props: P) => void
-    commitMount: () => void
-    destroy: () => void
-}
-export type Props = {
-    name?: string
-}
-export type State<P> = Named & {
-    children: Element<P>[]
-    depth: number
-    props: P
+export type Stream = {
+    connect: () => void
+    emitter: EventEmitter
+    disconnect: () => void
 }
 
-export function getSpaces(num = 0) {
-    return Array(num * 4).fill(' ').join('');
+export type StreamProps = {
+    stream: () => Stream
 }
 
-/*
-const defaultOptions = {
-    dispatch: (message) => console.info('DEFAULT_DISPATCH: %s', message),
-};
-*/
-export const OWN_PROP_KEYS = ['children', 'key'];
-
-export const elementTitle = (state: Named) => `<${state.type || ''}> ${state.name ? `[${state.name}]` : ''}`;
-export const elementLog = (state: State<unknown>) => `${getSpaces(state.depth)}Element${elementTitle(state)}`;
-
-export function createElement(item: string, props: Props): Element<Props | StreamProps> {
-    const type = item;
-    const name = props.name || '';
-    const state: State<Props> = {
+export function createStream(props: StreamProps): Element<StreamProps> {
+    const type = 'stream'
+    const name = props.stream?.name || '';
+    const state: State<StreamProps> = {
         children: [],
         name,
         type,
         depth: 0,
         props,
     };
-    console.info(`${elementLog(state)}: (init)`);
-    switch (type) {
-        case 'stream': return createStream(props as StreamProps)
-        default: break
-    }
-
+    const currentStream = props.stream()
+    currentStream.emitter.on('data', (data) => {
+        console.log('emitter data', data)
+    })
     return {
         type,
         name,
@@ -76,6 +51,7 @@ export function createElement(item: string, props: Props): Element<Props | Strea
         },
         commitMount() {
             console.info(`${elementLog(state)}: commitMount`);
+            currentStream.connect()
         },
         commitUpdate(newProps) {
             if (typeof newProps !== 'object') {
@@ -94,6 +70,7 @@ export function createElement(item: string, props: Props): Element<Props | Strea
         },
         destroy() {
             console.info(`${elementLog(state)}: (destroy)`);
+            currentStream.disconnect()
             if (Array.isArray(state.children)) {
                 state.children.forEach((child) => child.destroy());
             }
