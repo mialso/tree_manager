@@ -11,11 +11,11 @@ const rootElement = createElement('root', {});
 const container = renderer.createContainer(rootElement, false, false);
 const parentComponent = null;
 renderer.updateContainer(
-  React.createElement(NewRoot),
-  container,
-  parentComponent,
-  () => {
-    console.info(`[DDD---] ${new Date().getSeconds()}`);
-    dispatch(TREE_MOUNT);
-  },
+    React.createElement(NewRoot),
+    container,
+    parentComponent,
+    () => {
+        console.info(`[DDD---] ${new Date().getSeconds()}`);
+        dispatch(TREE_MOUNT);
+    },
 );

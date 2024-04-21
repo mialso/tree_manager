@@ -3,26 +3,27 @@ import type { Element, State } from './element'
 import { elementLog, elementTitle, OWN_PROP_KEYS } from './element'
 
 export type Stream = {
+    name: string
     connect: () => void
     emitter: EventEmitter
     disconnect: () => void
 }
 
 export type StreamProps = {
-    stream: () => Stream
+    stream: Stream
 }
 
 export function createStream(props: StreamProps): Element<StreamProps> {
     const type = 'stream'
-    const name = props.stream?.name || '';
+    const currentStream = props.stream
+    const name = currentStream.name || '';
     const state: State<StreamProps> = {
         children: [],
         name,
         type,
         depth: 0,
         props,
-    };
-    const currentStream = props.stream()
+    }
     currentStream.emitter.on('data', (data) => {
         console.log('emitter data', data)
     })

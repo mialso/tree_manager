@@ -1,12 +1,14 @@
 import React from 'react';
 import { testProductStream } from './product'
 
-export const TestIndex = () => {
+export const SimpleSnapshot = () => {
     return (
-        <stream stream={testProductStream}>
-            <model name="product">
-                <field name="price" />
-            </model>
-        </stream>
+        <snapshot name="product-price" byId>
+            <stream stream={testProductStream('factory-1')}>
+                < model name="product" >
+                    <field name="price" />
+                </model>
+            </stream >
+        </snapshot >
     )
 }

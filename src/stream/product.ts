@@ -1,5 +1,6 @@
 import { EventEmitter } from 'tsee';
 import type { Stream } from '../manager/stream'
+import { eventCreate, eventUpdate } from './event';
 
 const createId = (count: number) => `test-id-${count}`
 
@@ -15,15 +16,6 @@ const createProduct = ({ factoryId, name, id }: Partial<Product>): Product => ({
     factoryId,
     name,
 })
-
-type Event<P> = {
-    type: string
-    payload: P
-    seq: number
-}
-
-const eventUpdate = <P>(payload: P, seq: number): Event<P> => ({ type: 'UPDATE', payload, seq })
-const eventCreate = <P>(payload: P, seq: number): Event<P> => ({ type: 'CREATE', payload, seq })
 
 const productNames = ['one', 'two', 'three', 'four', 'five', 'six', 'seven']
 
@@ -69,6 +61,7 @@ export const testProductStream = (factoryId = 'test-factory-1'): Stream => {
     }
 
     return {
+        name: 'testProductStream <${factoryId}>',
         connect,
         disconnect,
         emitter,
