@@ -5,7 +5,7 @@ declare namespace JSX {
     "module": any;
     "control-state": any;
     "snapshot": { name: string; byId: boolean; children: any };
-    "stream": any;
+    "stream": { stream: any; children: any };
     "field": any;
     "model": any;
     "message": any;

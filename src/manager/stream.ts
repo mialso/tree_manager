@@ -1,5 +1,8 @@
 import type { EventEmitter } from 'tsee'
-import { initElement } from './element'
+import { compose } from 'redux'
+import { initLifecycle } from './lifecycle'
+import { initInput } from './input'
+import { initTreeNode } from './tree'
 
 export type Stream = {
     name: string
@@ -12,20 +15,24 @@ export type StreamProps = {
     stream: Stream
 }
 
-export const createStream = initElement<StreamProps>('stream', (props) => {
+export const createStream = (props: StreamProps) => {
     const currentStream = props.stream
     const name = currentStream.name || '';
     const handler = (data) => {
         console.log('emitter data', data)
     }
-    return {
-        commitMount() {
-            //currentStream.connect()
-            currentStream.emitter.on('data', handler)
-        },
-        destroy() {
-            // currentStream.disconnect()
-            currentStream.emitter.off('data', handler)
-        },
-    }
-})
+    return compose(
+        initInput('snapshot', props, {}),
+        initLifecycle('snapshot', props, {
+            commitMount() {
+                //currentStream.connect()
+                currentStream.emitter.on('data', handler)
+            },
+            destroy() {
+                // currentStream.disconnect()
+                currentStream.emitter.off('data', handler)
+            },
+        }),
+        initTreeNode('snapshot', {}),
+    )()
+}
