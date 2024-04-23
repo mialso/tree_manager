@@ -25,6 +25,7 @@ export const testProductStream = (factoryId = 'test-factory-1'): Stream => {
     let blockCount = 0
     let productCount = 0
     const connect = () => {
+        if (intervalId) return
         let currentProduct: Product | null = null
         intervalId = setInterval(() => {
             if ((blockCount % 3) === 0) {

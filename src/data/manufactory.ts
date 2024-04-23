@@ -22,6 +22,7 @@ export const testManufactoryStream = (): Stream => {
     ]
     let blockCount = initialManufactoryData.length - 1
     const connect = () => {
+        if (intervalId) return
         intervalId = setInterval(() => {
             const itemIndex = blockCount % 2
             const currentManufactory: Manufactory | undefined = initialManufactoryData[itemIndex]
@@ -36,7 +37,6 @@ export const testManufactoryStream = (): Stream => {
         }, 4000)
         initialManufactoryData.forEach((manufactory, index) => {
             emitter.emit('data', eventCreate(manufactory, index))
-
         })
     }
     const disconnect = () => {

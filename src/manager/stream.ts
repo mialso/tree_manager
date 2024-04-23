@@ -1,6 +1,5 @@
 import type { EventEmitter } from 'tsee'
-import type { Element, State } from './element'
-import { elementLog, elementTitle, OWN_PROP_KEYS } from './element'
+import { initElement } from './element'
 
 export type Stream = {
     name: string
@@ -13,68 +12,20 @@ export type StreamProps = {
     stream: Stream
 }
 
-export function createStream(props: StreamProps): Element<StreamProps> {
-    const type = 'stream'
+export const createStream = initElement<StreamProps>('stream', (props) => {
     const currentStream = props.stream
     const name = currentStream.name || '';
-    const state: State<StreamProps> = {
-        children: [],
-        name,
-        type,
-        depth: 0,
-        props,
-    }
-    currentStream.emitter.on('data', (data) => {
+    const handler = (data) => {
         console.log('emitter data', data)
-    })
+    }
     return {
-        type,
-        name,
-        setDepth(value: number) {
-            if (state.depth === value) {
-                return;
-            }
-            state.depth = value;
-            if (Array.isArray(state.children)) {
-                state.children.forEach((child) => child.setDepth(value + 1));
-            }
-        },
-        appendChild(child) {
-            console.info(`${elementLog(state)}: appendChild: ${elementTitle(child)}`);
-            state.children.push(child);
-            if (state.depth && Array.isArray(state.children)) {
-                state.children.forEach((child) => child.setDepth(state.depth + 1));
-            }
-        },
-        removeChild(child) {
-            console.info(`${elementLog(state)}: removeChild: ${elementTitle(child)}`);
-            state.children = state.children.filter((item) => item === child);
-        },
         commitMount() {
-            console.info(`${elementLog(state)}: commitMount`);
-            currentStream.connect()
-        },
-        commitUpdate(newProps) {
-            if (typeof newProps !== 'object') {
-                return
-            }
-            const propsString = Object.keys(newProps)
-                .filter((key) => !OWN_PROP_KEYS.includes(key))
-                .reduce((acc, key) => {
-                    if (state.props[key] !== newProps[key]) {
-                        return acc.concat(` ${key}=${JSON.stringify(newProps[key])}`);
-                    }
-                    return acc;
-                }, '');
-            console.info(`${elementLog(state)}: commitUpdate: ${propsString}`);
-            state.props = { ...state.props, ...newProps };
+            //currentStream.connect()
+            currentStream.emitter.on('data', handler)
         },
         destroy() {
-            console.info(`${elementLog(state)}: (destroy)`);
-            currentStream.disconnect()
-            if (Array.isArray(state.children)) {
-                state.children.forEach((child) => child.destroy());
-            }
+            // currentStream.disconnect()
+            currentStream.emitter.off('data', handler)
         },
-    };
-}
+    }
+})

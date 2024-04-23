@@ -1,5 +1,5 @@
 import React from 'react';
-import { SimpleSnapshot } from './Test';
+import { TreeManager } from './SimpleSnapshot';
 import { createReconciler } from '../moduleRenderer';
 import { createElement } from '../manager/element';
 
@@ -8,7 +8,7 @@ const rootElement = createElement('root', {});
 const container = renderer.createContainer(rootElement, false, false);
 const parentComponent = null;
 renderer.updateContainer(
-    React.createElement(SimpleSnapshot),
+    React.createElement(TreeManager),
     container,
     parentComponent,
     () => {

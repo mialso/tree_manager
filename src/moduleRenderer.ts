@@ -1,10 +1,14 @@
 import ReactReconciler from 'react-reconciler';
 import { OWN_PROP_KEYS, createElement } from './manager/element';
+import { createStream } from './manager/stream';
 import { dispatch } from './bus/messageBus';
 
-export function createInstance(type, props, _containerElem) {
+export function createInstance(type: string, props, _containerElem) {
     // return createElement(type, props, { dispatch });
-    return createElement(type, props);
+    switch (type) {
+        case 'stream': return createStream(type, props)
+        default: return createElement(type, props);
+    }
 }
 
 export function appendInitialChild(parentInstance, child) {
@@ -49,7 +53,7 @@ export function removeChildFromContainer(container, child) {
 export function insertBefore() { }
 
 export function appendChildToContainer(container, child) {
-    child.setDepth(1)
+    child.setDepth(1, 'appendChildToContainer')
     return container.appendChild(child);
 }
 
