@@ -5,7 +5,7 @@ export const MergedSnapshot = () => {
     const product1Stream = useStream(StreamId.Product1)
     const product2tream = useStream(StreamId.Product2)
     return (
-        <snapshot name="product-price" byId>
+        <snapshot name="product-price" byId onData={() => { }}>
             <stream stream={product1Stream}>
                 <model name="product">
                     <field name="price" />

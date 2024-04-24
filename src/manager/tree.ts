@@ -9,7 +9,7 @@ export type TreeNode<P> = {
     type: string
     getChildren: () => TreeNode<unknown>[]
     getParent: () => unknown
-    setParent: (node: unknown) => void
+    setParent: (node: TreeNode<unknown>) => void
     setDepth: (depth: number, source: string) => void
     getDepth: () => number
     appendChild: (node: TreeNode<P>) => void
@@ -39,6 +39,7 @@ export const initTreeNode = <P>(type: string, ext: Partial<TreeNode<P>>): TreeNo
             getChildren: () => state.children,
             getParent: () => state.parent,
             setParent: (node) => {
+                console.info(`${nodeBaseLog(state)}: setParent: ${nodeTitle(node)}`);
                 state.parent = node
             },
             getDepth: () => state.depth,

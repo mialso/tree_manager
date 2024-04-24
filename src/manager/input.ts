@@ -1,41 +1,49 @@
-import { TreeNode } from "./tree"
+import type { Event } from '../data/event'
+import type { TreeNode } from "./tree"
 
 export type Input = {
-    capture: () => boolean
-    bubble: () => boolean
+    capture: (data: Event<unknown>) => void
+    bubble: (data: Event<unknown>) => void
 }
+export type InputProps = Partial<{
+    onData: (data: Event<unknown>) => boolean
+    onCreate: (data: Event<unknown>) => boolean
+    onUpdate: (data: Event<unknown>) => boolean
+    onDelete: (data: Event<unknown>) => boolean
+}>
 type InputCreate<P> = <B extends TreeNode<P>>(base: B) => B & Input
 
-function isInput(node: any): node is Input {
+export function isInput(node: any): node is Input {
     return node && (typeof node.capture === 'function') && (typeof node.bubble === 'function')
 }
 
-export const initInput = <P>(type: string, props: P, ext: Partial<Input>): InputCreate<P> => {
+export const initInput = <P extends InputProps>(type: string, props?: P): InputCreate<P> => {
     return (base) => {
         return ({
             ...base,
-            capture: () => {
-                const prevent = !!(ext.capture && ext.capture())
+            capture: (data) => {
+                console.log(`capture <${type}>`)
+                const prevent = !!(props && props.onData && props.onData(data))
+                // const prevent = !!(ext.capture && ext.capture())
                 if (prevent) {
-                    return true
+                    return
                 }
                 base.getChildren().forEach((child) => {
                     if (isInput(child)) {
-                        child.capture()
+                        child.capture(data)
                     }
                 })
-                return false
             },
-            bubble: () => {
-                const prevent = !!(ext.bubble && ext.bubble())
+            bubble: (data) => {
+                console.log(`bubble <${type}>`)
+                const prevent = !!(props && props.onData && props.onData(data))
                 if (prevent) {
-                    return true
+                    return
                 }
                 const parent = base.getParent() as Input
                 if (isInput(parent)) {
-                    parent.bubble()
+                    parent.bubble(data)
                 }
-                return false
             },
         })
     }

@@ -2,6 +2,7 @@ import ReactReconciler from 'react-reconciler';
 import { OWN_PROP_KEYS } from './manager/lifecycle';
 import { createElement } from './manager/element';
 import { createStream } from './manager/stream';
+import { createField } from './manager/field';
 import { dispatch } from './bus/messageBus';
 import { createSnapshot } from './manager/snapshot';
 
@@ -10,11 +11,14 @@ export function createInstance(type: string, props, _containerElem) {
     switch (type) {
         case 'stream': return createStream(props)
         case 'snapshot': return createSnapshot(props)
+        case 'field': return createField(props)
         default: return createElement(type, props);
     }
 }
 
 export function appendInitialChild(parentInstance, child) {
+    // console.log('appendInitialChild')
+    child.setParent(parentInstance)
     return parentInstance.appendChild(child);
 }
 
@@ -61,7 +65,7 @@ export function appendChildToContainer(container, child) {
 }
 
 export function appendChild(parentInstance, child) {
-    child.setParent(parentInstance)
+    // console.log('appendChild')
     return parentInstance.appendChild(child);
 }
 

@@ -1,4 +1,4 @@
-type Event<P> = {
+export type Event<P> = {
     type: string
     payload: P
     seq: number
