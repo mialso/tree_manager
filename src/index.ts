@@ -5,7 +5,7 @@ import { createElement } from './manager/element';
 import { dispatch } from './bus/messageBus';
 import { TREE_MOUNT } from './bus/message';
 
-const renderer = createReconciler();
+const renderer = createReconciler({ getInstance: () => null });
 const rootElement = createElement('root', {});
 // const rootElement = createElement('root', {}, { dispatch: () => { console.info('ROOT'); } });
 const container = renderer.createContainer(rootElement, false, false);

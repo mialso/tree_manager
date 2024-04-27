@@ -1,19 +1,14 @@
 import ReactReconciler from 'react-reconciler';
 import { OWN_PROP_KEYS } from './manager/lifecycle';
 import { createElement } from './manager/element';
-import { createStream } from './manager/stream';
-import { createField } from './manager/field';
-import { dispatch } from './bus/messageBus';
-import { createSnapshot } from './manager/snapshot';
 
-export function createInstance(type: string, props, _containerElem) {
+export const instanceCreator = ({ getInstance }) => (type: string, props, _containerElem) => {
     // return createElement(type, props, { dispatch });
-    switch (type) {
-        case 'stream': return createStream(props)
-        case 'snapshot': return createSnapshot(props)
-        case 'field': return createField(props)
-        default: return createElement(type, props);
+    const instance = getInstance(type, props)
+    if (!instance) {
+        return createElement(type, props);
     }
+    return instance
 }
 
 export function appendInitialChild(parentInstance, child) {
@@ -112,9 +107,9 @@ export function clearTimeout(handle) {
     return clearTimeout(handle);
 }
 
-export function createReconciler() {
+export function createReconciler({ getInstance }) {
     const hostConfig = {
-        createInstance,
+        createInstance: instanceCreator({ getInstance }),
         appendInitialChild,
         finalizeInitialChildren,
         createTextInstance,
