@@ -1,13 +1,19 @@
 import ReactReconciler from 'react-reconciler';
-import { OWN_PROP_KEYS, createElement } from './manager/element';
-import { dispatch } from './bus/messageBus';
+import { OWN_PROP_KEYS } from './manager/lifecycle';
+import { createElement } from './manager/element';
 
-export function createInstance(type, props, _containerElem) {
+export const instanceCreator = ({ getInstance }) => (type: string, props, _containerElem) => {
     // return createElement(type, props, { dispatch });
-    return createElement(type, props);
+    const instance = getInstance(type, props)
+    if (!instance) {
+        return createElement(type, props);
+    }
+    return instance
 }
 
 export function appendInitialChild(parentInstance, child) {
+    // console.log('appendInitialChild')
+    child.setParent(parentInstance)
     return parentInstance.appendChild(child);
 }
 
@@ -49,11 +55,12 @@ export function removeChildFromContainer(container, child) {
 export function insertBefore() { }
 
 export function appendChildToContainer(container, child) {
-    child.setDepth(1)
+    child.setDepth(1, 'appendChildToContainer')
     return container.appendChild(child);
 }
 
 export function appendChild(parentInstance, child) {
+    // console.log('appendChild')
     return parentInstance.appendChild(child);
 }
 
@@ -100,9 +107,9 @@ export function clearTimeout(handle) {
     return clearTimeout(handle);
 }
 
-export function createReconciler() {
+export function createReconciler({ getInstance }) {
     const hostConfig = {
-        createInstance,
+        createInstance: instanceCreator({ getInstance }),
         appendInitialChild,
         finalizeInitialChildren,
         createTextInstance,
