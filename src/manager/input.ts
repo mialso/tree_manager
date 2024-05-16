@@ -2,14 +2,14 @@ import type { Event } from '../data/event'
 import type { TreeNode } from "./tree"
 
 export type Input = {
-    capture: (data: Event<unknown>) => void
-    bubble: (data: Event<unknown>) => void
+    capture: (data: Event) => void
+    bubble: (data: Event) => void
 }
 export type InputProps = Partial<{
-    onData: (data: Event<unknown>) => boolean
-    onCreate: (data: Event<unknown>) => boolean
-    onUpdate: (data: Event<unknown>) => boolean
-    onDelete: (data: Event<unknown>) => boolean
+    onData: (data: Event) => boolean
+    onCreate: (data: Event) => boolean
+    onUpdate: (data: Event) => boolean
+    onDelete: (data: Event) => boolean
 }>
 type InputCreate<P> = <B extends TreeNode<P>>(base: B) => B & Input
 
