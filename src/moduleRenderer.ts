@@ -11,6 +11,32 @@ export const instanceCreator = ({ getInstance }) => (type: string, props, _conta
     return instance
 }
 
+/*
+ * for reference
+ * https://github.com/facebook/react/blob/main/packages/react-reconciler/src/forks/ReactFiberConfig.custom.js
+ */
+
+/*
+ * core
+ */
+export function getPublicInstance(instance) {
+    return instance;
+}
+
+export function getRootHostContext(_rootContainer) {
+    return null;
+}
+
+export function getChildHostContext(parentHostContext, _type, _rootContainer) {
+    return parentHostContext;
+}
+
+export function prepareForCommit() { }
+
+export function resetAfterCommit() { }
+
+// createInstance placeholder
+
 export function appendInitialChild(parentInstance, child) {
     // console.log('appendInitialChild')
     child.setParent(parentInstance)
@@ -21,59 +47,68 @@ export function finalizeInitialChildren() {
     return true;
 }
 
+export function shouldSetTextContent() {
+    return false;
+}
+
 export function createTextInstance(text) {
-    return { data: text };
+    throw new Error('not implemented')
+    // return { data: text };
 }
 
-export function getPublicInstance(instance) {
-    return instance;
-}
+export const scheduleTimeout = setTimeout;
+export const cancelTimeout = clearTimeout;
+const noTimeout = -1;
+const isPrimaryRenderer = true;
 
-export function prepareForCommit() { }
+export const warnsIfNotActing = null;
+export const supportsMutation = true;
+export const supportsPersistence = false;
+export const supportsHydration = false;
+export const supportsMicrotasks = false;
+export const supportsTestSelectors = false;
+export const getInstanceFromNode = null;
+export const beforeActiveInstanceBlur = null;
+export const afterActiveInstanceBlur = null;
 
+export function preparePortalMount () {};
+export const prepareScopeUpdate = null;
+export const getInstanceFromScope = null;
+export const setCurrentUpdatePriority = null;
+export const getCurrentUpdatePriority = null;
+export const resolveUpdatePriority = null;
+export const shouldAttemptEagerTransition = null;
+export function detachDeletedInstance () {}
+export const requestPostPaintCallback = null;
+export const maySuspendCommit = null;
+export const preloadInstance = null;
+export const startSuspendingCommit = null;
+export const suspendInstance = null;
+export const waitForCommitToBeReady = null;
+export const NotPendingTransition = null;
+export const resetFormInstance = null;
+
+// TODO: strange, not mentioned in the docs
 export function prepareUpdate() {
     return true;
 }
-
-export function resetAfterCommit() { }
-
-export function resetTextContent() { }
-
-export function commitTextUpdate() { }
-
-export function removeChild(parentInstance, child) {
-    if (typeof child.destroy === 'function') {
-        child.destroy();
-    }
-    return parentInstance.removeChild(child);
-}
-
-export function removeChildFromContainer(container, child) {
-    console.log('removeChildFromContainer')
-}
-
-export function insertBefore() { }
-
-export function appendChildToContainer(container, child) {
-    child.setDepth(1, 'appendChildToContainer')
-    return container.appendChild(child);
-}
+/*
+ * mutation
+ */
 
 export function appendChild(parentInstance, child) {
     // console.log('appendChild')
     return parentInstance.appendChild(child);
 }
-
-export function shouldSetTextContent() {
-    return false;
+export function appendChildToContainer(container, child) {
+    child.setDepth(1, 'appendChildToContainer')
+    return container.appendChild(child);
 }
 
-export function getRootHostContext() {
-    return {};
-}
+export function commitTextUpdate() { }
 
-export function getChildHostContext() {
-    return {};
+export function commitMount(instance) {
+    return instance.commitMount();
 }
 
 export function commitUpdate(instance, uP, t, oldProps, newProps) {
@@ -87,28 +122,44 @@ export function commitUpdate(instance, uP, t, oldProps, newProps) {
     }
 }
 
-export function commitMount(instance) {
-    return instance.commitMount();
+export function insertBefore() { }
+export function insertInContainerBefore() {}
+
+export function removeChild(parentInstance, child) {
+    // TODO: not expected to traverse child tree here
+    if (typeof child.destroy === 'function') {
+        child.destroy();
+    }
+    return parentInstance.removeChild(child);
 }
 
+export function removeChildFromContainer(container, child) {
+    return removeChild(container, child)
+}
+
+export function resetTextContent() { }
+
+export const hideInstance = null;
+export const hideTextInstance = null;
+export const unhideInstance = null;
+export const unhideTextInstance = null;
+export function clearContainer() {}
+
+
+/*
 export function shouldDeprioritizeSubtree() {
     return true;
 }
 
+
 export function scheduleDeferredCallback() { }
 
 export function cancelDeferredCallback() { }
-
-export function setTimeout(handler, timeout) {
-    return setTimeout(handler, timeout);
-}
-
-export function clearTimeout(handle) {
-    return clearTimeout(handle);
-}
+*/
 
 export function createReconciler({ getInstance }) {
     const hostConfig = {
+        // core
         createInstance: instanceCreator({ getInstance }),
         appendInitialChild,
         finalizeInitialChildren,
@@ -117,29 +168,39 @@ export function createReconciler({ getInstance }) {
         prepareForCommit,
         prepareUpdate,
         resetAfterCommit,
-        resetTextContent,
-        commitTextUpdate,
-        removeChild,
-        removeChildFromContainer,
-        insertBefore,
-        appendChildToContainer,
-        appendChild,
         shouldSetTextContent,
         getRootHostContext,
         getChildHostContext,
-        now: Date.now,
-        commitUpdate,
+        // now: Date.now,
+        // shouldDeprioritizeSubtree,
+        // scheduleDeferredCallback,
+        // cancelDeferredCallback,
+        clearContainer,
+        detachDeletedInstance,
+        preparePortalMount,
+        scheduleTimeout,
+        cancelTimeout,
+        noTimeout,
+        isPrimaryRenderer,
+
+        supportsMutation,
+        // mutation
+        appendChild,
+        appendChildToContainer,
+        commitTextUpdate,
         commitMount,
-        shouldDeprioritizeSubtree,
-        scheduleDeferredCallback,
-        cancelDeferredCallback,
-        setTimeout,
-        clearTimeout,
-        noTimeout: -1,
-        isPrimaryRenderer: true,
-        supportsMutation: true,
-        supportsPersistence: false,
-        supportsHydration: false,
+        commitUpdate,
+        insertBefore,
+        insertInContainerBefore,
+        removeChild,
+        removeChildFromContainer,
+        resetTextContent,
+
+
+        supportsPersistence,
+        supportsHydration,
+        supportsMicrotasks,
+        supportsTestSelectors,
     };
     return ReactReconciler(hostConfig);
 }
