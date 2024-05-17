@@ -51,7 +51,7 @@ export function shouldSetTextContent() {
     return false;
 }
 
-export function createTextInstance(text) {
+export function createTextInstance(_text) {
     throw new Error('not implemented')
     // return { data: text };
 }
@@ -71,14 +71,14 @@ export const getInstanceFromNode = null;
 export const beforeActiveInstanceBlur = null;
 export const afterActiveInstanceBlur = null;
 
-export function preparePortalMount () {};
+export function preparePortalMount() { };
 export const prepareScopeUpdate = null;
 export const getInstanceFromScope = null;
 export const setCurrentUpdatePriority = null;
 export const getCurrentUpdatePriority = null;
 export const resolveUpdatePriority = null;
 export const shouldAttemptEagerTransition = null;
-export function detachDeletedInstance () {}
+export function detachDeletedInstance() { }
 export const requestPostPaintCallback = null;
 export const maySuspendCommit = null;
 export const preloadInstance = null;
@@ -123,7 +123,7 @@ export function commitUpdate(instance, uP, t, oldProps, newProps) {
 }
 
 export function insertBefore() { }
-export function insertInContainerBefore() {}
+export function insertInContainerBefore() { }
 
 export function removeChild(parentInstance, child) {
     // TODO: not expected to traverse child tree here
@@ -143,19 +143,7 @@ export const hideInstance = null;
 export const hideTextInstance = null;
 export const unhideInstance = null;
 export const unhideTextInstance = null;
-export function clearContainer() {}
-
-
-/*
-export function shouldDeprioritizeSubtree() {
-    return true;
-}
-
-
-export function scheduleDeferredCallback() { }
-
-export function cancelDeferredCallback() { }
-*/
+export function clearContainer() { }
 
 export function createReconciler({ getInstance }) {
     const hostConfig = {
@@ -171,10 +159,6 @@ export function createReconciler({ getInstance }) {
         shouldSetTextContent,
         getRootHostContext,
         getChildHostContext,
-        // now: Date.now,
-        // shouldDeprioritizeSubtree,
-        // scheduleDeferredCallback,
-        // cancelDeferredCallback,
         clearContainer,
         detachDeletedInstance,
         preparePortalMount,
@@ -183,8 +167,8 @@ export function createReconciler({ getInstance }) {
         noTimeout,
         isPrimaryRenderer,
 
-        supportsMutation,
         // mutation
+        supportsMutation,
         appendChild,
         appendChildToContainer,
         commitTextUpdate,
