@@ -84,11 +84,6 @@ export const resolveUpdatePriority = null;
 export const shouldAttemptEagerTransition = null;
 export function detachDeletedInstance() { }
 export const requestPostPaintCallback = null;
-export const maySuspendCommit = null;
-export const preloadInstance = null;
-export const startSuspendingCommit = null;
-export const suspendInstance = null;
-export const waitForCommitToBeReady = null;
 export const NotPendingTransition = null;
 export const resetFormInstance = null;
 
@@ -102,27 +97,27 @@ export function prepareUpdate() {
 
 export function appendChild(parentInstance, child) {
     // console.log('appendChild')
-    return parentInstance.appendChild(child);
+    parentInstance.appendChild(child);
 }
 export function appendChildToContainer(container, child) {
     child.setDepth(1, 'appendChildToContainer')
-    return container.appendChild(child);
+    container.appendChild(child);
 }
 
 export function commitTextUpdate() { }
 
-export function commitMount(instance) {
+export function commitMount(instance, _type, _props) {
     return instance.commitMount();
 }
 
-export function commitUpdate(instance, uP, t, oldProps, newProps) {
-    const hasUpdate = Object.keys(newProps)
+export function commitUpdate(instance, _type, prevProps, nextProps, _internalHandle) {
+    const hasUpdate = Object.keys(nextProps)
         .filter((key) => !OWN_PROP_KEYS.includes(key))
         .reduce((acc, key) => {
-            return acc || (oldProps[key] !== newProps[key])
+            return acc || (prevProps[key] !== nextProps[key])
         }, false)
     if (hasUpdate) {
-        instance.commitUpdate(newProps);
+        instance.commitUpdate(nextProps);
     }
 }
 
@@ -134,20 +129,34 @@ export function removeChild(parentInstance, child) {
     if (typeof child.destroy === 'function') {
         child.destroy();
     }
-    return parentInstance.removeChild(child);
+    parentInstance.removeChild(child);
 }
 
 export function removeChildFromContainer(container, child) {
-    return removeChild(container, child)
+    removeChild(container, child);
 }
 
 export function resetTextContent() { }
 
-export const hideInstance = null;
+export function hideInstance(_instance) {
+    // TODO: Suspense
+}
 export const hideTextInstance = null;
-export const unhideInstance = null;
+export function unhideInstance(_instance, _props) {
+    // TODO: Suspense
+}
 export const unhideTextInstance = null;
 export function clearContainer() { }
+export function maySuspendCommit(_type, _props) {
+    // TODO: Suspense
+}
+export const preloadInstance = null;
+export const startSuspendingCommit = null;
+export const suspendInstance = null;
+export function waitForCommitToBeReady() {
+    // TODO: Suspense
+    return null;
+}
 
 export function createReconciler({ getInstance }) {
     const hostConfig = {
@@ -185,6 +194,11 @@ export function createReconciler({ getInstance }) {
         removeChild,
         removeChildFromContainer,
         resetTextContent,
+        // TODO: suspense
+        hideInstance,
+        unhideInstance,
+        maySuspendCommit,
+        waitForCommitToBeReady,
 
         // microtasks
         supportsMicrotasks,
