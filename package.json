@@ -5,11 +5,9 @@
     "main": "index.js",
     "scripts": {
         "build": "webpack --env dev",
-        "build:stream": "webpack --env dev --config webpack-stream.config.js",
         "build:prod": "webpack --env prod",
-        "execute": "node build/bundle.js",
-        "execute:stream": "node build/bundle.js",
-        "execute:debug": "node --inspect-brk build/bundle.js",
+        "exec": "node build/bundle.js",
+        "exec:debug": "node --inspect-brk build/bundle.js",
         "dep:graph": "npx madge --image graph.svg src/",
         "lint": "npx eslint src/",
         "test": "echo \"Error: no test specified\" && exit 1"
