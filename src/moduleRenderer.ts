@@ -2,7 +2,7 @@ import ReactReconciler from 'react-reconciler';
 import { OWN_PROP_KEYS } from './manager/lifecycle';
 import { createElement } from './manager/element';
 
-export const instanceCreator = ({ getInstance }) => (type: string, props, _containerElem) => {
+export const instanceCreator = ({ getInstance }) => (type: string, props, _rootContainer) => {
     // return createElement(type, props, { dispatch });
     const instance = getInstance(type, props)
     if (!instance) {
@@ -31,7 +31,9 @@ export function getChildHostContext(parentHostContext, _type, _rootContainer) {
     return parentHostContext;
 }
 
-export function prepareForCommit() { }
+export function prepareForCommit() {
+    return null
+}
 
 export function resetAfterCommit() { }
 
@@ -44,6 +46,7 @@ export function appendInitialChild(parentInstance, child) {
 }
 
 export function finalizeInitialChildren() {
+    // to receive "commitMount"
     return true;
 }
 
@@ -65,7 +68,8 @@ export const warnsIfNotActing = null;
 export const supportsMutation = true;
 export const supportsPersistence = false;
 export const supportsHydration = false;
-export const supportsMicrotasks = false;
+export const supportsMicrotasks = true;
+export const scheduleMicrotask = queueMicrotask;
 export const supportsTestSelectors = false;
 export const getInstanceFromNode = null;
 export const beforeActiveInstanceBlur = null;
@@ -158,6 +162,8 @@ export function createReconciler({ getInstance }) {
         resetAfterCommit,
         shouldSetTextContent,
         getRootHostContext,
+        // TODO
+        // getCurrentEventPriority
         getChildHostContext,
         clearContainer,
         detachDeletedInstance,
@@ -180,10 +186,12 @@ export function createReconciler({ getInstance }) {
         removeChildFromContainer,
         resetTextContent,
 
+        // microtasks
+        supportsMicrotasks,
+        scheduleMicrotask,
 
         supportsPersistence,
         supportsHydration,
-        supportsMicrotasks,
         supportsTestSelectors,
     };
     return ReactReconciler(hostConfig);
