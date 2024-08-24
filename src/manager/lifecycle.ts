@@ -16,7 +16,7 @@ type ElementCreate<P> = <B extends TreeNode<P>>(base: B) => B & Lifecycle<P>
 // type ElementInit<P> = (p: P) => Partial<Lifecycle<P>>
 
 
-export const initLifecycle = <P>(type: string, props: P, ext: Partial<Lifecycle<P>>): ElementCreate<P> => {
+export const initLifecycle = <P>(props: P, ext: Partial<Lifecycle<P>>): ElementCreate<P> => {
     return (base) => {
         const state = {
             props
