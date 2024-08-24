@@ -1,3 +1,6 @@
+export type NodeConfig = {
+    type: string
+}
 export type NodeState<P> = {
     type: string
     children: TreeNode<P>[]
@@ -16,7 +19,7 @@ export type TreeNode<P> = {
     removeChild: (node: TreeNode<P>) => void
 }
 
-type TreeNodeCreate<P> = () => TreeNode<P>
+type TreeNodeCreate<P> = (config: NodeConfig) => TreeNode<P>
 
 
 export function getSpaces(num = 0) {
@@ -25,8 +28,8 @@ export function getSpaces(num = 0) {
 export const nodeTitle = (state: { type: string }) => `<${state.type || 'unknown'}>`;
 export const nodeBaseLog = (state: NodeState<unknown>) => `${getSpaces(state.depth)}Node<${nodeTitle(state)}>`;
 
-export const initTreeNode = <P>(type: string, ext: Partial<TreeNode<P>>): TreeNodeCreate<P> => {
-    return () => {
+export const initTreeNode = <P>(ext: Partial<TreeNode<P>>): TreeNodeCreate<P> => {
+    return ({ type }: NodeConfig) => {
         const state: NodeState<P> = {
             type,
             parent: null,
