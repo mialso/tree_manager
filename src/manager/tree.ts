@@ -28,7 +28,7 @@ export function getSpaces(num = 0) {
 export const nodeTitle = (state: { type: string }) => `<${state.type || 'unknown'}>`;
 export const nodeBaseLog = (state: NodeState<unknown>) => `${getSpaces(state.depth)}Node<${nodeTitle(state)}>`;
 
-export const initTreeNode = <P>(ext: Partial<TreeNode<P>>): TreeNodeCreate<P> => {
+export const initTreeNode = <P>(ext?: Partial<TreeNode<P>>): TreeNodeCreate<P> => {
     return ({ type }: NodeConfig) => {
         const state: NodeState<P> = {
             type,

@@ -17,13 +17,13 @@ export function isInput(node: any): node is Input {
     return node && (typeof node.capture === 'function') && (typeof node.bubble === 'function')
 }
 
-export const initInput = <P extends InputProps>(props?: P): InputCreate<P> => {
+export const initInput = <P extends InputProps>(ext?: P): InputCreate<P> => {
     return (base) => {
         return ({
             ...base,
             capture: (data) => {
-                console.log(`capture <${base.type}>`)
-                const prevent = !!(props && props.onData && props.onData(data))
+                console.log(`capture <${base.type}>`, data)
+                const prevent = !!(ext && ext.onData && ext.onData(data))
                 // const prevent = !!(ext.capture && ext.capture())
                 if (prevent) {
                     return
@@ -35,8 +35,8 @@ export const initInput = <P extends InputProps>(props?: P): InputCreate<P> => {
                 })
             },
             bubble: (data) => {
-                console.log(`bubble <${base.type}>`)
-                const prevent = !!(props && props.onData && props.onData(data))
+                console.log(`bubble <${base.type}>`, data)
+                const prevent = !!(ext && ext.onData && ext.onData(data))
                 if (prevent) {
                     return
                 }
