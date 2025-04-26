@@ -14,8 +14,8 @@ export type InputProps = Partial<{
 }>
 type InputCreate<P> = <B extends TreeNode<P>>(base: B) => B & Input
 
-export function isInput(node: unknown): node is Input {
-    return (typeof node === 'object')
+export function isInput(node: any): node is Input {
+    return node
         && (typeof node.capture === 'function')
         && (typeof node.bubble === 'function')
 }
