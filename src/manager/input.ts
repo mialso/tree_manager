@@ -7,14 +7,17 @@ export type Input = {
 }
 export type InputProps = Partial<{
     onData: (data: Event) => boolean
+    onCtrl: (data: Event) => boolean
     onCreate: (data: Event) => boolean
     onUpdate: (data: Event) => boolean
     onDelete: (data: Event) => boolean
 }>
 type InputCreate<P> = <B extends TreeNode<P>>(base: B) => B & Input
 
-export function isInput(node: any): node is Input {
-    return node && (typeof node.capture === 'function') && (typeof node.bubble === 'function')
+export function isInput(node: unknown): node is Input {
+    return (typeof node === 'object')
+        && (typeof node.capture === 'function')
+        && (typeof node.bubble === 'function')
 }
 
 export const initInput = <P extends InputProps>(ext?: P): InputCreate<P> => {
@@ -23,7 +26,7 @@ export const initInput = <P extends InputProps>(ext?: P): InputCreate<P> => {
             ...base,
             capture: (data) => {
                 console.log(`capture <${base.type}>`, data)
-                const prevent = !!(ext && ext.onData && ext.onData(data))
+                const prevent = !!(ext && ext.onCtrl && ext.onCtrl(data))
                 // const prevent = !!(ext.capture && ext.capture())
                 if (prevent) {
                     return
