@@ -38,12 +38,13 @@ export const initInput = <P extends InputProps>(ext?: P): InputCreate<P> => {
                 })
             },
             bubble: (data) => {
-                console.log(`bubble <${base.type}>`, data)
                 const prevent = !!(ext && ext.onData && ext.onData(data))
                 if (prevent) {
+                    // console.log(`bubble [PREVENT] <${base.type}>`, data)
                     return
                 }
-                const parent = base.getParent() as Input
+                console.log(`bubble <${base.type}>`, data)
+                const parent = base.getParent()
                 if (isInput(parent)) {
                     parent.bubble(data)
                 }

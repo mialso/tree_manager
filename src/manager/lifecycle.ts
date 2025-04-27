@@ -2,11 +2,9 @@ import { TreeNode, getSpaces } from "./tree"
 
 export type Lifecycle<P> = {
     commitUpdate: (props: P) => void
+    getProps: () => P
     commitMount: () => void
     destroy: () => void
-}
-export type Props = {
-    name?: string
 }
 export const OWN_PROP_KEYS = ['children', 'key'];
 
@@ -26,6 +24,7 @@ export const initLifecycle = <P>(props: P, ext?: Partial<Lifecycle<P>>): Element
         }
         return ({
             ...base,
+            getProps: () => state.props,
             commitMount: () => {
                 log(base, 'commitMount');
                 ext?.commitMount && ext.commitMount()
@@ -38,13 +37,16 @@ export const initLifecycle = <P>(props: P, ext?: Partial<Lifecycle<P>>): Element
                     .filter((key) => !OWN_PROP_KEYS.includes(key))
                     .reduce((acc, key) => {
                         if (state.props[key] !== newProps[key]) {
+                            console.log(`Lifecycle: props change =${key}`)
                             return acc.concat(` ${key}=${JSON.stringify(newProps[key])}`);
                         }
+                        console.log(`Lifecycle: props same =${key}`)
                         return acc;
                     }, '');
-                log(base, `commitUpdate: ${propsString}`);
+                log(base, `commitUpdate: ${propsString || '<no changes>'}`);
                 // TODO: just update
-                state.props = { ...state.props, ...newProps };
+                state.props = newProps
+                // state.props = { ...state.props, ...newProps };
                 ext?.commitUpdate && ext.commitUpdate(newProps)
             },
             destroy: () => {
