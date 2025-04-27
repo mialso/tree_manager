@@ -96,7 +96,6 @@ export function prepareUpdate(_instance, _type, _prevProps, _nextProps, _rootCon
  */
 
 export function appendChild(parentInstance, child) {
-    // console.log('appendChild')
     parentInstance.appendChild(child);
 }
 export function appendChildToContainer(container, child) {
@@ -110,7 +109,8 @@ export function commitMount(instance, _type, _props) {
     return instance.commitMount();
 }
 
-export function commitUpdate(instance, _type, prevProps, nextProps, _internalHandle) {
+export function commitUpdate(instance, nextProps, _type, prevProps, _internalProps) {
+    // TODO: what's _internalProps
     // instance.commitUpdate(nextProps);
     const hasUpdate = Object.keys(nextProps)
         .filter((key) => !OWN_PROP_KEYS.includes(key))

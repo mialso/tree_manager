@@ -37,13 +37,11 @@ export const initLifecycle = <P>(props: P, ext?: Partial<Lifecycle<P>>): Element
                     .filter((key) => !OWN_PROP_KEYS.includes(key))
                     .reduce((acc, key) => {
                         if (state.props[key] !== newProps[key]) {
-                            console.log(`Lifecycle: props change =${key}`)
-                            return acc.concat(` ${key}=${JSON.stringify(newProps[key])}`);
+                            return acc.concat(` ${key}`);
                         }
-                        console.log(`Lifecycle: props same =${key}`)
                         return acc;
                     }, '');
-                log(base, `commitUpdate: ${propsString || '<no changes>'}`);
+                log(base, `commitUpdate: ${propsString}`);
                 // TODO: just update
                 state.props = newProps
                 // state.props = { ...state.props, ...newProps };
