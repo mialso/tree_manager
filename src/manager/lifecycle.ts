@@ -1,3 +1,4 @@
+import { LOG_LEVEL } from "../log/log-level"
 import { TreeNode, getSpaces } from "./tree"
 
 export type Lifecycle<P> = {
@@ -12,15 +13,20 @@ export const elementBaseLog = (getDepth: () => number, type: string) => `${getSp
 
 type ElementCreate<P> = <B extends TreeNode<P>>(base: B) => B & Lifecycle<P>
 // type ElementInit<P> = (p: P) => Partial<Lifecycle<P>>
+//
+export type LifecycleExt<P> = Partial<{
+    commitUpdate: (props: P) => void
+    commitMount: () => void
+    destroy: () => void
+}>
 
-
-export const initLifecycle = <P>(props: P, ext?: Partial<Lifecycle<P>>): ElementCreate<P> => {
+export const initLifecycle = <P>(props: P, ext?: LifecycleExt<P>): ElementCreate<P> => {
     return (base) => {
         const state = {
             props
         }
         const log = (base: TreeNode<P>, text: string) => {
-            console.info(`${elementBaseLog(base.getDepth, base.type)}: ${text}`);
+            base.log(LOG_LEVEL.TRACE, `${elementBaseLog(base.getDepth, base.type)}: ${text}`);
         }
         return ({
             ...base,
@@ -42,15 +48,14 @@ export const initLifecycle = <P>(props: P, ext?: Partial<Lifecycle<P>>): Element
                         return acc;
                     }, '');
                 log(base, `commitUpdate: ${propsString}`);
-                // TODO: just update
                 state.props = newProps
-                // state.props = { ...state.props, ...newProps };
                 ext?.commitUpdate && ext.commitUpdate(newProps)
             },
             destroy: () => {
                 log(base, 'destroy')
                 const children = base.getChildren()
-                children.forEach((child: any) => child.destroy());
+                // TODO: not required to traverse children?
+                children.forEach((child: any) => child?.destroy());
                 // TODO: before children destroy?
                 ext?.destroy && ext.destroy()
             },

@@ -1,12 +1,12 @@
 import { compose } from 'redux'
-import { initLifecycle } from './lifecycle'
+import { initLifecycle, LifecycleExt } from './lifecycle'
 import { initInput } from './input'
-import { initTreeNode } from './tree'
+import { initTreeNode, TreeNodeExt } from './tree'
 
-export const createElement = (type: string, props: unknown) => {
+export const createElement = <P>(type: string, props: unknown, ext?: TreeNodeExt<P> & LifecycleExt<P>) => {
     return compose(
         initInput(props),
         initLifecycle(props, {}),
-        initTreeNode({}),
+        initTreeNode(ext || {}),
     )({ type })
 }

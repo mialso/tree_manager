@@ -2,9 +2,8 @@ import ReactReconciler from 'react-reconciler';
 import { OWN_PROP_KEYS } from './manager/lifecycle';
 import { createElement } from './manager/element';
 
-export const instanceCreator = ({ getInstance }) => (type: string, props, _rootContainer) => {
-    // return createElement(type, props, { dispatch });
-    const instance = getInstance(type, props)
+export const instanceCreator = ({ getInstance }) => (type: string, props, rootContainer, _a, _fiberNode) => {
+    const instance = getInstance(type, props, rootContainer)
     if (!instance) {
         return createElement(type, props);
     }
@@ -105,7 +104,8 @@ export function appendChildToContainer(container, child) {
 
 export function commitTextUpdate() { }
 
-export function commitMount(instance, _type, _props) {
+export function commitMount(instance, _type, _props, _fiberNode) {
+    debugger
     return instance.commitMount();
 }
 

@@ -1,4 +1,5 @@
 import type { Event } from '../data/event'
+import { LOG_LEVEL } from "../log/log-level"
 import type { TreeNode } from "./tree"
 
 export type Input = {
@@ -8,9 +9,6 @@ export type Input = {
 export type InputProps = Partial<{
     onData: (data: Event) => boolean
     onCtrl: (data: Event) => boolean
-    onCreate: (data: Event) => boolean
-    onUpdate: (data: Event) => boolean
-    onDelete: (data: Event) => boolean
 }>
 type InputCreate<P> = <B extends TreeNode<P>>(base: B) => B & Input
 
@@ -25,12 +23,12 @@ export const initInput = <P extends InputProps>(ext?: P): InputCreate<P> => {
         return ({
             ...base,
             capture: (data) => {
-                console.log(`capture <${base.type}>`, data)
                 const prevent = !!(ext && ext.onCtrl && ext.onCtrl(data))
                 // const prevent = !!(ext.capture && ext.capture())
                 if (prevent) {
                     return
                 }
+                base.log(LOG_LEVEL.DEBUG, `capture <${base.type}>`,  data)
                 base.getChildren().forEach((child) => {
                     if (isInput(child)) {
                         child.capture(data)
@@ -43,7 +41,7 @@ export const initInput = <P extends InputProps>(ext?: P): InputCreate<P> => {
                     // console.log(`bubble [PREVENT] <${base.type}>`, data)
                     return
                 }
-                console.log(`bubble <${base.type}>`, data)
+                base.log(LOG_LEVEL.DEBUG, `bubble <${base.type}>`, data)
                 const parent = base.getParent()
                 if (isInput(parent)) {
                     parent.bubble(data)
