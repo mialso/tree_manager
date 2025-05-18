@@ -1,11 +1,12 @@
 import { LOG_LEVEL } from "../log/log-level"
 import { TreeNode, getSpaces } from "./tree"
 
-export type Lifecycle<P> = {
+export type Lifecycle<P = unknown> = {
     commitUpdate: (props: P) => void
     getProps: () => P
     commitMount: () => void
     destroy: () => void
+    getNodeLive: () => boolean
 }
 export const OWN_PROP_KEYS = ['children', 'key'];
 
@@ -23,19 +24,29 @@ export type LifecycleExt<P> = Partial<{
 export const initLifecycle = <P>(props: P, ext?: LifecycleExt<P>): ElementCreate<P> => {
     return (base) => {
         const state = {
-            props
+            props,
+            mounted: false,
+            destroyed: false,
         }
         const log = (base: TreeNode<P>, text: string) => {
             base.log(LOG_LEVEL.TRACE, `${elementBaseLog(base.getDepth, base.type)}: ${text}`);
         }
+        const getNodeLive = () => state.mounted && !state.destroyed
         return ({
             ...base,
             getProps: () => state.props,
+            getNodeLive,
             commitMount: () => {
                 log(base, 'commitMount');
+                state.mounted = true
                 ext?.commitMount && ext.commitMount()
             },
             commitUpdate: (newProps) => {
+                if (!getNodeLive()) {
+                    const errorText = `invalid update mounted=${state.mounted} destroyed=${state.destroyed}`
+                    base.log(LOG_LEVEL.ERROR, `${elementBaseLog(base.getDepth, base.type)}: ${errorText}`)
+                    return
+                }
                 if (typeof newProps !== 'object') {
                     return
                 }
@@ -53,6 +64,7 @@ export const initLifecycle = <P>(props: P, ext?: LifecycleExt<P>): ElementCreate
             },
             destroy: () => {
                 log(base, 'destroy')
+                state.destroyed = true
                 const children = base.getChildren()
                 // TODO: not required to traverse children?
                 children.forEach((child: any) => child?.destroy());

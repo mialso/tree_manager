@@ -3,8 +3,10 @@ import { OWN_PROP_KEYS } from './manager/lifecycle';
 import { createElement } from './manager/element';
 
 export const instanceCreator = ({ getInstance }) => (type: string, props, rootContainer, _a, _fiberNode) => {
+    // console.log(`instanceCreator`, { key: _fiberNode.key })
     const instance = getInstance(type, props, rootContainer)
     if (!instance) {
+        console.log(`instanceCreator NO INSTANCE ${type}`)
         return createElement(type, props);
     }
     return instance
@@ -105,7 +107,6 @@ export function appendChildToContainer(container, child) {
 export function commitTextUpdate() { }
 
 export function commitMount(instance, _type, _props, _fiberNode) {
-    debugger
     return instance.commitMount();
 }
 

@@ -1,5 +1,6 @@
 import type { Event } from '../data/event'
 import { LOG_LEVEL } from "../log/log-level"
+import { Lifecycle } from './lifecycle'
 import type { TreeNode } from "./tree"
 
 export type Input = {
@@ -10,7 +11,8 @@ export type InputProps = Partial<{
     onData: (data: Event) => boolean
     onCtrl: (data: Event) => boolean
 }>
-type InputCreate<P> = <B extends TreeNode<P>>(base: B) => B & Input
+type Base = TreeNode & Lifecycle
+type InputCreate<P> = <B extends Base>(base: B) => B & Input
 
 export function isInput(node: any): node is Input {
     return node
@@ -23,6 +25,10 @@ export const initInput = <P extends InputProps>(ext?: P): InputCreate<P> => {
         return ({
             ...base,
             capture: (data) => {
+                if (!base.getNodeLive()) {
+                    base.log(LOG_LEVEL.ERROR, `invalid capture lifecycle <${base.type}>`)
+                    return
+                }
                 const prevent = !!(ext && ext.onCtrl && ext.onCtrl(data))
                 // const prevent = !!(ext.capture && ext.capture())
                 if (prevent) {
@@ -36,6 +42,10 @@ export const initInput = <P extends InputProps>(ext?: P): InputCreate<P> => {
                 })
             },
             bubble: (data) => {
+                if (!base.getNodeLive()) {
+                    base.log(LOG_LEVEL.ERROR, `invalid bubble lifecycle <${base.type}>`)
+                    return
+                }
                 const prevent = !!(ext && ext.onData && ext.onData(data))
                 if (prevent) {
                     // console.log(`bubble [PREVENT] <${base.type}>`, data)
