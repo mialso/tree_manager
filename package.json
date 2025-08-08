@@ -12,7 +12,6 @@
         "dep:graph": "npx madge --image graph.svg src/",
         "lint": "npx eslint src/",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "preinstall": "npm ci --include=dev",
         "postinstall": "npm run compile"
     },
     "type": "module",
