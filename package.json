@@ -6,13 +6,18 @@
     "scripts": {
         "build": "webpack --env dev",
         "build:prod": "webpack --env prod",
+        "compile": "swc ./src --config-file .swcrc -d ./dist",
         "exec": "node build/bundle.js",
         "exec:debug": "node --inspect-brk build/bundle.js",
         "dep:graph": "npx madge --image graph.svg src/",
         "lint": "npx eslint src/",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "postinstall": "npm run compile"
     },
     "type": "module",
+    "exports": {
+        "./*": "./dist/src/*"
+    },
     "author": "mialso",
     "license": "ISC",
     "dependencies": {
@@ -23,6 +28,8 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.1.1",
+        "@swc/cli": "^0.7.8",
+        "@swc/core": "^1.13.3",
         "@types/react": "18.3.2",
         "eslint": "^8.57.0",
         "eslint-config-airbnb": "^19.0.4",
