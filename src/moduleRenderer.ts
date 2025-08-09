@@ -1,4 +1,4 @@
-import ReactReconciler from 'react-reconciler';
+// import ReactReconciler from 'react-reconciler';
 import { OWN_PROP_KEYS } from './manager/lifecycle';
 import { createElement } from './manager/element';
 
@@ -210,5 +210,6 @@ export function createReconciler({ getInstance }) {
         supportsHydration,
         supportsTestSelectors,
     };
-    return ReactReconciler(hostConfig);
+    return hostConfig;
+    // return ReactReconciler(hostConfig);
 }
