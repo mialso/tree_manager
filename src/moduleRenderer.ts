@@ -61,8 +61,11 @@ export function createTextInstance(_text) {
 }
 
 export const scheduleTimeout = setTimeout;
+// export const scheduleTimeout = (fn) => fn();
 export const cancelTimeout = clearTimeout;
 const noTimeout = -1;
+// const noTimeout = 1;
+// console.log('moduleRenderer', { noTimeout })
 const isPrimaryRenderer = true;
 
 export const warnsIfNotActing = null;
@@ -98,10 +101,12 @@ export function prepareUpdate(_instance, _type, _prevProps, _nextProps, _rootCon
 
 export function appendChild(parentInstance, child) {
     parentInstance.appendChild(child);
+    child.setParent(parentInstance);
 }
 export function appendChildToContainer(container, child) {
     child.setDepth(1, 'appendChildToContainer')
     container.appendChild(child);
+    // TODO: should set parent?
 }
 
 export function commitTextUpdate() { }
