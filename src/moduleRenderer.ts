@@ -128,7 +128,10 @@ export function commitUpdate(instance, nextProps, _type, prevProps, _internalPro
     }
 }
 
-export function insertBefore() { }
+export function insertBefore(parentInstance, newInstance, _beforeInstance) {
+    parentInstance.appendChild(newInstance);
+    newInstance.setParent(parentInstance);
+}
 export function insertInContainerBefore() { }
 
 export function removeChild(parentInstance, child) {
