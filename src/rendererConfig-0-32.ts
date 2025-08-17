@@ -14,6 +14,19 @@ export const instanceCreator = ({ getInstance }) => (type: string, props: unknow
 type Instance = TreeNode & Lifecycle
 
 const hostContext = Object.freeze({})
+const scheduleTimeout = typeof setTimeout === 'function' ? setTimeout : undefined
+export const cancelTimeout = typeof clearTimeout === 'function' ? clearTimeout : undefined
+/*
+const scheduleTimeout = (fn) => fn()
+export const cancelTimeout = () => {}
+*/
+export const noTimeout = -1;
+const localPromise = typeof Promise === 'function' ? Promise : undefined
+function handleErrorInNextTick(error) {
+  setTimeout(() => {
+    throw error;
+  });
+}
 
 export function createHostConfig ({ getInstance, DefaultEventPriority }) {
     const hostConfig = {
@@ -22,7 +35,7 @@ export function createHostConfig ({ getInstance, DefaultEventPriority }) {
         extraDevToolsConfig: null,
 
         getPublicInstance: (instance) => instance,
-        getRootHostContext: (_rootInstancve) => hostContext,
+        getRootHostContext: (_rootInstance) => hostContext,
         getChildHostContext: (parentContext, _type) => parentContext,
         prepareForCommit: (_containerInfo) => null,
         resetAfterCommit: () => undefined,
@@ -48,9 +61,9 @@ export function createHostConfig ({ getInstance, DefaultEventPriority }) {
             throw new Error('not implemented')
         },
 
-        scheduleTimeout: setTimeout,
-        cancelTimeout: clearTimeout,
-        noTimeout: -1,
+        scheduleTimeout,
+        cancelTimeout,
+        noTimeout,
         isPrimaryRenderer: false,
         warnsIfNotActing: null, // TODO: try "true" as react-dom has
         supportsMutation: true,
@@ -158,19 +171,22 @@ export function createHostConfig ({ getInstance, DefaultEventPriority }) {
         updateFragmentInstanceFiber: null,
         commitNewChildToFragmentInstance: null,
         deleteChildFromFragmentInstance: null,
-    }
+
+        // -------------------
+        //      Microtasks
+        //     (optional)
+        // -------------------
+        supportsMicrotasks: true,
+        scheduleMicrotask:
+            typeof queueMicrotask === 'function'
+                ? queueMicrotask
+                : typeof localPromise !== 'undefined'
+                    ? (callback) => localPromise.resolve(null).then(callback).catch(handleErrorInNextTick)
+                    : scheduleTimeout
+        }
     return hostConfig;
 }
 
-
-// -------------------
-//      Microtasks
-//     (optional)
-// -------------------
-/*
-export const supportsMicrotasks = $$$config.supportsMicrotasks;
-export const scheduleMicrotask = $$$config.scheduleMicrotask;
-*/
 
 // -------------------
 //      Test selectors
